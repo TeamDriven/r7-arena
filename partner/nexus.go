@@ -8,7 +8,7 @@ package partner
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"io"
 	"net/http"
 	"strconv"

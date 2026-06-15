@@ -192,7 +192,7 @@ go.work.sum
 *.o
 *.a
 *.so
-cheesy-arena
+r7-arena
 
 # Folders
 _obj

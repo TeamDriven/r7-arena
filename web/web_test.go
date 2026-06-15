@@ -4,9 +4,9 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/websocket"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -20,7 +20,7 @@ func TestIndex(t *testing.T) {
 
 	recorder := web.getHttpResponse("/")
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Body.String(), "Home - Untitled Event - Cheesy Arena")
+	assert.Contains(t, recorder.Body.String(), "Home - Untitled Event - R7 Arena")
 }
 
 func (web *Web) getHttpResponse(path string) *httptest.ResponseRecorder {

@@ -4,7 +4,7 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -15,7 +15,7 @@ func TestLogoDisplay(t *testing.T) {
 
 	recorder := web.getHttpResponse("/displays/logo?displayId=1&message=")
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Body.String(), "Logo Display - Untitled Event - Cheesy Arena")
+	assert.Contains(t, recorder.Body.String(), "Logo Display - Untitled Event - R7 Arena")
 }
 
 func TestLogoDisplayWebsocket(t *testing.T) {

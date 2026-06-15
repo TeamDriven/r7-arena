@@ -4,11 +4,11 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/tournament"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/tournament"
+	"github.com/TeamDriven/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -27,7 +27,15 @@ func TestMatchPlay(t *testing.T) {
 func TestCommitMatchGenericScores(t *testing.T) {
 	web := setupTestWeb(t)
 
-	match := &model.Match{Type: model.Qualification, Red1: 101, Red2: 102, Red3: 103, Blue1: 104, Blue2: 105, Blue3: 106}
+	match := &model.Match{
+		Type:  model.Qualification,
+		Red1:  101,
+		Red2:  102,
+		Red3:  103,
+		Blue1: 104,
+		Blue2: 105,
+		Blue3: 106,
+	}
 	assert.Nil(t, web.arena.Database.CreateMatch(match))
 	matchResult := &model.MatchResult{
 		MatchId: match.Id,

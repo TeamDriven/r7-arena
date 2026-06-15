@@ -4,8 +4,8 @@
 package playoff
 
 import (
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -70,13 +70,15 @@ func TestDoubleEliminationFourAllianceInitial(t *testing.T) {
 	finalMatchup, breakSpecs, err := newDoubleEliminationBracket(4)
 	assert.Nil(t, err)
 
-	assert.Equal(t, []breakSpec{
-		{3, 900, "Field Break"},
-		{5, 900, "Awards Break"},
-		{6, 900, "Awards Break"},
-		{7, 900, "Awards Break"},
-		{8, 900, "Awards Break *"},
-	}, breakSpecs)
+	assert.Equal(
+		t, []breakSpec{
+			{3, 900, "Field Break"},
+			{5, 900, "Awards Break"},
+			{6, 900, "Awards Break"},
+			{7, 900, "Awards Break"},
+			{8, 900, "Awards Break *"},
+		}, breakSpecs,
+	)
 
 	matchSpecs, err := collectMatchSpecs(finalMatchup)
 	assert.Nil(t, err)

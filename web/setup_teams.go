@@ -8,7 +8,7 @@ package web
 import (
 	"bytes"
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"github.com/dchest/uniuri"
 	"net/http"
 	"regexp"

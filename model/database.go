@@ -7,7 +7,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/game"
+	"github.com/TeamDriven/r7-arena/game"
 	"go.etcd.io/bbolt"
 	"io"
 	"os"

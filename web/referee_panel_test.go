@@ -4,10 +4,10 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -18,12 +18,20 @@ func TestRefereePanel(t *testing.T) {
 
 	recorder := web.getHttpResponse("/panels/referee")
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Body.String(), "Referee Panel - Untitled Event - Cheesy Arena")
+	assert.Contains(t, recorder.Body.String(), "Referee Panel - Untitled Event - R7 Arena")
 	assert.Contains(t, recorder.Body.String(), "Foul Points Against")
 	assert.Contains(t, recorder.Body.String(), "Commit & Post")
 	assert.Contains(t, recorder.Body.String(), "Scores not committed")
-	assert.NotContains(t, recorder.Body.String(), `id="redFoulPointsAgainst" type="number" min="0" step="1" value="0" disabled`)
-	assert.NotContains(t, recorder.Body.String(), `id="blueFoulPointsAgainst" type="number" min="0" step="1" value="0" disabled`)
+	assert.NotContains(
+		t,
+		recorder.Body.String(),
+		`id="redFoulPointsAgainst" type="number" min="0" step="1" value="0" disabled`,
+	)
+	assert.NotContains(
+		t,
+		recorder.Body.String(),
+		`id="blueFoulPointsAgainst" type="number" min="0" step="1" value="0" disabled`,
+	)
 	assert.NotContains(t, recorder.Body.String(), "Tower")
 }
 
@@ -42,26 +50,32 @@ func TestRefereePanelWebsocket(t *testing.T) {
 	readWebsocketType(t, ws, "realtimeScore")
 	readWebsocketType(t, ws, "scoringStatus")
 
-	ws.Write("foulPoints", struct {
-		RedFoulPointsAgainst  int
-		BlueFoulPointsAgainst int
-	}{5, 7})
+	ws.Write(
+		"foulPoints", struct {
+			RedFoulPointsAgainst  int
+			BlueFoulPointsAgainst int
+		}{5, 7},
+	)
 	readWebsocketType(t, ws, "realtimeScore")
 	assert.Equal(t, 5, web.arena.RedRealtimeScore.CurrentScore.FoulPointsAgainst)
 	assert.Equal(t, 7, web.arena.BlueRealtimeScore.CurrentScore.FoulPointsAgainst)
 
-	ws.Write("foulPointsAgainst", struct {
-		Alliance string
-		Points   int
-	}{"blue", 11})
+	ws.Write(
+		"foulPointsAgainst", struct {
+			Alliance string
+			Points   int
+		}{"blue", 11},
+	)
 	readWebsocketType(t, ws, "realtimeScore")
 	assert.Equal(t, 11, web.arena.BlueRealtimeScore.CurrentScore.FoulPointsAgainst)
 
-	ws.Write("card", struct {
-		Alliance string
-		TeamId   int
-		Card     string
-	}{"red", 256, "yellow"})
+	ws.Write(
+		"card", struct {
+			Alliance string
+			TeamId   int
+			Card     string
+		}{"red", 256, "yellow"},
+	)
 	readWebsocketType(t, ws, "realtimeScore")
 	assert.Equal(t, "yellow", web.arena.RedRealtimeScore.Cards["256"])
 
@@ -69,11 +83,13 @@ func TestRefereePanelWebsocket(t *testing.T) {
 	web.arena.CurrentMatch.Blue1 = 1679
 	web.arena.CurrentMatch.Blue2 = 1680
 	web.arena.CurrentMatch.Blue3 = 1681
-	ws.Write("card", struct {
-		Alliance string
-		TeamId   int
-		Card     string
-	}{"blue", 1680, "red"})
+	ws.Write(
+		"card", struct {
+			Alliance string
+			TeamId   int
+			Card     string
+		}{"blue", 1680, "red"},
+	)
 	readWebsocketType(t, ws, "realtimeScore")
 	assert.Equal(t, "red", web.arena.BlueRealtimeScore.Cards["1679"])
 	assert.Equal(t, "red", web.arena.BlueRealtimeScore.Cards["1680"])
@@ -107,6 +123,12 @@ func TestRefereePanelWebsocketCommitAndPost(t *testing.T) {
 	readWebsocketType(t, ws, "scoringStatus")
 	assert.Equal(t, 6, web.arena.SavedMatchResult.RedScoreSummary().Score)
 	assert.Equal(t, 15, web.arena.SavedMatchResult.BlueScoreSummary().Score)
-	assert.True(t, web.arena.SavedMatchResult.RedScore.Equals(&game.Score{AutoPoints: 1, TeleopPoints: 2, PostMatchPoints: 3}))
-	assert.True(t, web.arena.SavedMatchResult.BlueScore.Equals(&game.Score{AutoPoints: 4, TeleopPoints: 5, PostMatchPoints: 6}))
+	assert.True(
+		t,
+		web.arena.SavedMatchResult.RedScore.Equals(&game.Score{AutoPoints: 1, TeleopPoints: 2, PostMatchPoints: 3}),
+	)
+	assert.True(
+		t,
+		web.arena.SavedMatchResult.BlueScore.Equals(&game.Score{AutoPoints: 4, TeleopPoints: 5, PostMatchPoints: 6}),
+	)
 }

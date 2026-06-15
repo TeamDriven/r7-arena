@@ -7,12 +7,12 @@ package field
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/network"
-	"github.com/Team254/cheesy-arena-lite/partner"
-	"github.com/Team254/cheesy-arena-lite/playoff"
-	"github.com/Team254/cheesy-arena-lite/plc"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/network"
+	"github.com/TeamDriven/r7-arena/partner"
+	"github.com/TeamDriven/r7-arena/playoff"
+	"github.com/TeamDriven/r7-arena/plc"
 	"log"
 	"net"
 	"reflect"
@@ -1286,7 +1286,10 @@ func (arena *Arena) AutomateAudienceDisplay(postedMatch *model.Match) {
 
 	if arena.CurrentMatch.Type == model.Playoff {
 		time.Sleep(10 * time.Second)
-		isFinals := strings.Contains(postedMatch.LongName, "Final") || strings.Contains(postedMatch.LongName, "Overtime")
+		isFinals := strings.Contains(postedMatch.LongName, "Final") || strings.Contains(
+			postedMatch.LongName,
+			"Overtime",
+		)
 		if !isFinals {
 			arena.SetAudienceDisplayMode("bracket")
 			time.Sleep(20 * time.Second)

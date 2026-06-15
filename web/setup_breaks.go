@@ -6,7 +6,7 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"net/http"
 	"strconv"
 )
