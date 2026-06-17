@@ -219,3 +219,5 @@ _testmain.go
 .DS_Store
 static/logs
 static/img/avatars
+/keys-new.csv
+/keys-old.csv
