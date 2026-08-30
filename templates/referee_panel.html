@@ -9,7 +9,7 @@ UI for entering cards and foul points.
 <div id="matchName"></div>
 <div id="refereePanel">
   <section id="cards">
-    <h3>Red/Yellow Cards</h3>
+    <h3 id="teamTitle">Red/Yellow Cards</h3>
     <div class="alliance-cards" id="redCards">
       {{range $i := seq 3}}
       {{template "teamCard" dict "alliance" "red" "position" $i}}
@@ -63,6 +63,24 @@ UI for entering cards and foul points.
     </div>
   </div>
 </div>
+<div id="confirmBypass" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="confirmBypassTitle">Disable?</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-footer">
+        <form class="form-horizontal">
+          <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-lg btn-danger ms-2" onclick="toggleBypass();" data-bs-dismiss="modal" id="confirmBypassAction">
+            Disable
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {{end}}
 {{define "head"}}
 <link rel="manifest" href="/static/manifest/referee.manifest">
@@ -74,6 +92,6 @@ UI for entering cards and foul points.
 <script src="/static/js/referee_panel.js"></script>
 {{end}}
 {{define "teamCard"}}
-<div class="team-card" id="{{.alliance}}Team{{.position}}Card" data-alliance="{{.alliance}}" onclick="cycleCard(this);">
+<div class="team-card" id="{{.alliance}}{{.position}}Card" data-alliance="{{.alliance}}" data-station="{{slice .alliance 0 1}}{{.position}}" onclick="cycleCard(this);">
 </div>
 {{end}}

@@ -41,6 +41,7 @@ func TestRefereePanelWebsocket(t *testing.T) {
 	readWebsocketType(t, ws, "matchTime")
 	readWebsocketType(t, ws, "realtimeScore")
 	readWebsocketType(t, ws, "scoringStatus")
+	readWebsocketType(t, ws, "arenaStatus")
 
 	ws.Write("foulPoints", struct {
 		RedFoulPointsAgainst  int
@@ -101,7 +102,7 @@ func TestRefereePanelWebsocketCommitAndPost(t *testing.T) {
 	assert.Nil(t, err)
 	defer conn.Close()
 	ws := websocket.NewTestWebsocket(conn)
-	readWebsocketMultiple(t, ws, 4)
+	readWebsocketMultiple(t, ws, 5)
 
 	ws.Write("commitAndPost", nil)
 	readWebsocketType(t, ws, "scoringStatus")

@@ -33,7 +33,7 @@ func TestEncodeControlPacket(t *testing.T) {
 
 	tcpConn := setupFakeTcpConnection(t)
 	defer tcpConn.Close()
-	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, false)
+	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, driverStationRoboRioUdpPort)
 	assert.Nil(t, err)
 	defer dsConn.close()
 
@@ -155,7 +155,7 @@ func TestSendControlPacket(t *testing.T) {
 
 	tcpConn := setupFakeTcpConnection(t)
 	defer tcpConn.Close()
-	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, false)
+	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, driverStationRoboRioUdpPort)
 	assert.Nil(t, err)
 	defer dsConn.close()
 
@@ -295,19 +295,19 @@ func TestNewDriverStationConnection_UdpPortSelection(t *testing.T) {
 	defer tcpConn.Close()
 
 	// Test with default settings (FMS port).
-	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, false)
+	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, driverStationRoboRioUdpPort)
 	assert.Nil(t, err)
 	defer dsConn.close()
-	assert.Contains(t, dsConn.udpAddrPort.String(), fmt.Sprintf(":%d", driverStationUdpSendPort))
+	assert.Contains(t, dsConn.udpAddrPort.String(), fmt.Sprintf(":%d", driverStationRoboRioUdpPort))
 
 	tcpConnLite := setupFakeTcpConnection(t)
 	defer tcpConnLite.Close()
 
 	// Test with FMS Lite port enabled.
-	dsConnLite, err := newDriverStationConnection(254, "R1", tcpConnLite, true)
+	dsConnLite, err := newDriverStationConnection(254, "R1", tcpConnLite, driverStationRoboRioUdpPortLite)
 	assert.Nil(t, err)
 	defer dsConnLite.close()
-	assert.Contains(t, dsConnLite.udpAddrPort.String(), fmt.Sprintf(":%d", driverStationUdpSendPortLite))
+	assert.Contains(t, dsConnLite.udpAddrPort.String(), fmt.Sprintf(":%d", driverStationRoboRioUdpPortLite))
 }
 
 func TestNewDriverStationConnection_Ipv6Address(t *testing.T) {
@@ -322,11 +322,11 @@ func TestNewDriverStationConnection_Ipv6Address(t *testing.T) {
 	}
 	defer tcpConn.Close()
 
-	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, false)
+	dsConn, err := newDriverStationConnection(254, "R1", tcpConn, driverStationRoboRioUdpPort)
 	assert.Nil(t, err)
 	defer dsConn.close()
 	assert.Equal(t, "::1", dsConn.udpAddrPort.Addr().String())
-	assert.Equal(t, uint16(driverStationUdpSendPort), dsConn.udpAddrPort.Port())
+	assert.Equal(t, uint16(driverStationRoboRioUdpPort), dsConn.udpAddrPort.Port())
 }
 
 func setupFakeTcpConnection(t *testing.T) net.Conn {

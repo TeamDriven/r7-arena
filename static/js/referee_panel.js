@@ -7,6 +7,7 @@ var websocket;
 let refCommitted = false;
 let controlsAvailable = false;
 let scoreIsReady = false;
+let isPostMatch = false;
 
 const parseFoulInput = function (selector) {
   const value = parseInt($(selector).val(), 10);
@@ -28,25 +29,45 @@ const setInputValue = function (selector, value) {
 };
 
 var cycleCard = function (cardButton) {
-  if (!controlsAvailable || refCommitted) {
+  if (isPostMatch) {
+    if (!controlsAvailable || refCommitted) {
+      return;
+    }
+
+    const currentCard = $(cardButton).attr("data-card");
+    const hasOldYellowCard = $(cardButton).attr("data-old-yellow-card") === "true";
+    let newCard = "";
+    if (currentCard === "" && hasOldYellowCard) {
+      newCard = "red";
+    } else if (currentCard === "") {
+      newCard = "yellow";
+    } else if (currentCard === "yellow") {
+      newCard = "red";
+    }
+    websocket.send(
+      "card",
+      {Alliance: $(cardButton).attr("data-alliance"), TeamId: parseInt($(cardButton).attr("data-team")), Card: newCard}
+    );
+    $(cardButton).attr("data-card", newCard);
     return;
   }
 
-  const currentCard = $(cardButton).attr("data-card");
-  const hasOldYellowCard = $(cardButton).attr("data-old-yellow-card") === "true";
-  let newCard = "";
-  if (currentCard === "" && hasOldYellowCard) {
-    newCard = "red";
-  } else if (currentCard === "") {
-    newCard = "yellow";
-  } else if (currentCard === "yellow") {
-    newCard = "red";
+  const isDisabled = $(cardButton).hasClass("bypassed-status");
+  const team = $(cardButton).attr("data-team");
+  $("#confirmBypassTitle").text(`${isDisabled ? "Enable" : "Disable"} ${team}?`);
+  $("#confirmBypassAction").text(isDisabled ? "Enable" : "Disable");
+  $("#confirmBypass").attr("data-station", $(cardButton).attr("data-station")?.toUpperCase());
+
+  if (team === "0") {
+    toggleBypass();
+  } else {
+    $("#confirmBypass").modal("show");
   }
-  websocket.send(
-    "card",
-    {Alliance: $(cardButton).attr("data-alliance"), TeamId: parseInt($(cardButton).attr("data-team")), Card: newCard}
-  );
-  $(cardButton).attr("data-card", newCard);
+};
+
+const toggleBypass = function () {
+  const station = $("#confirmBypass").attr("data-station");
+  websocket.send("toggleBypass", station);
 };
 
 var signalVolunteers = function () {
@@ -86,10 +107,17 @@ var handleMatchLoad = function (data) {
 };
 
 const handleMatchTime = function (data) {
-	controlsAvailable = matchStates[data.MatchState] === "POST_MATCH";
+	isPostMatch = matchStates[data.MatchState] === "POST_MATCH";
+	controlsAvailable = isPostMatch;
 	if (!controlsAvailable) {
 		refCommitted = false;
 	}
+
+	let title = "Red/Yellow Cards";
+	if (!isPostMatch) {
+		title = matchStates[data.MatchState] === "PRE_MATCH" ? "Bypass" : "Disable";
+	}
+	$("#teamTitle").text(title);
 	updateUIMode();
 };
 
@@ -112,6 +140,20 @@ const handleScoringStatus = function (data) {
 	updateUIMode();
 };
 
+const handleArenaStatus = function (data) {
+  setTeamBypassedStatus("red1", data.AllianceStations["R1"]?.Bypass);
+  setTeamBypassedStatus("red2", data.AllianceStations["R2"]?.Bypass);
+  setTeamBypassedStatus("red3", data.AllianceStations["R3"]?.Bypass);
+  setTeamBypassedStatus("blue1", data.AllianceStations["B1"]?.Bypass);
+  setTeamBypassedStatus("blue2", data.AllianceStations["B2"]?.Bypass);
+  setTeamBypassedStatus("blue3", data.AllianceStations["B3"]?.Bypass);
+};
+
+const setTeamBypassedStatus = function (station, bypassed) {
+  const cardButton = $(`#${station}Card`);
+  cardButton.toggleClass("bypassed-status", bypassed && !isPostMatch);
+};
+
 const updateUIMode = function () {
 	$("input[type=number]").prop("disabled", false);
 	$(".control-button").attr("data-enabled", controlsAvailable);
@@ -119,9 +161,9 @@ const updateUIMode = function () {
 };
 
 const setTeamCard = function (alliance, position, team) {
-  const cardButton = $(`#${alliance}Team${position}Card`);
+  const cardButton = $(`#${alliance}${position}Card`);
   if (team === null) {
-    cardButton.text(0);
+    cardButton.text("-");
     cardButton.attr("data-team", 0);
     cardButton.attr("data-old-yellow-card", "");
   } else {
@@ -147,6 +189,9 @@ $(function () {
     },
     scoringStatus: function (event) {
       handleScoringStatus(event.data);
+    },
+    arenaStatus: function (event) {
+      handleArenaStatus(event.data);
     },
   });
 });
