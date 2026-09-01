@@ -255,13 +255,10 @@ func (web *Web) matchPlayWebsocketHandler(w http.ResponseWriter, r *http.Request
 				writeWebsocketError(ws, fmt.Sprintf("Failed to parse '%s' message.", messageType))
 				continue
 			}
-			if _, ok := web.arena.AllianceStations[station]; !ok {
-				writeWebsocketError(ws, fmt.Sprintf("Invalid alliance station '%s'.", station))
+			err = web.arena.ToggleBypass(station)
+			if err != nil {
+				writeWebsocketError(ws, err.Error())
 				continue
-			}
-			web.arena.AllianceStations[station].Bypass = !web.arena.AllianceStations[station].Bypass
-			if err = ws.WriteNotifier(web.arena.ArenaStatusNotifier); err != nil {
-				log.Println(err)
 			}
 		case "startMatch":
 			args := struct {
@@ -490,6 +487,11 @@ func (web *Web) commitMatchScore(match *model.Match, matchResult *model.MatchRes
 					return err
 				}
 			}
+		}
+
+		if web.arena.EventSettings.NexusAutoQueueEnabled && !isMatchReviewEdit {
+			// Trigger Nexus AutoQueue asynchronously, ignoring errors.
+			go web.arena.NexusClient.AutoQueue(match.LongName, match.TypeOrder, match.Status)
 		}
 
 		// Back up the database, but don't error out if it fails.

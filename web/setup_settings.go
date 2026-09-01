@@ -10,10 +10,10 @@ import (
 	"github.com/TeamDriven/r7-arena/field"
 	"github.com/TeamDriven/r7-arena/model"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -128,6 +128,8 @@ func (web *Web) settingsPostHandler(w http.ResponseWriter, r *http.Request) {
 	eventSettings.TbaSecret = ""
 	eventSettings.AutoAudienceDisplayEnabled = r.PostFormValue("autoAudienceDisplayEnabled") == "on"
 	eventSettings.NexusEnabled = r.PostFormValue("nexusEnabled") == "on"
+	eventSettings.NexusAutoQueueEnabled = r.PostFormValue("nexusAutoQueueEnabled") == "on"
+	eventSettings.NexusAutoQueueKey = r.PostFormValue("nexusAutoQueueKey")
 	eventSettings.NetworkSecurityEnabled = r.PostFormValue("networkSecurityEnabled") == "on"
 	eventSettings.ApAddress = r.PostFormValue("apAddress")
 	eventSettings.ApPassword = r.PostFormValue("apPassword")
@@ -249,9 +251,10 @@ func (web *Web) restoreDbHandler(w http.ResponseWriter, r *http.Request) {
 		web.renderSettings(w, r, "No database backup file was specified.")
 		return
 	}
+	defer file.Close()
 
 	// Write the file to a temporary location on disk and verify that it can be opened as a database.
-	tempFile, err := ioutil.TempFile(".", "uploaded-db-")
+	tempFile, err := os.CreateTemp(filepath.Dir(web.arena.Database.Path), "uploaded-db-")
 	if err != nil {
 		handleWebErr(w, err)
 		return
@@ -390,7 +393,8 @@ func (web *Web) renderSettingsWithStatus(
 		*model.EventSettings
 		ErrorMessage      string
 		ActiveSettingsTab string
-	}{web.arena.EventSettings, errorMessage, activeSettingsTab}
+		NexusBaseUrl      string
+	}{web.arena.EventSettings, errorMessage, activeSettingsTab, web.arena.NexusClient.BaseUrl}
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)
 	}

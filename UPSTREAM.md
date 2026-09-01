@@ -2,9 +2,9 @@
 
 Source repo: `../cheesy-arena`
 
-Last reviewed commit: `5b91a8a5eca73e4715e6704fab537efc92e465e6`
+Last reviewed commit: `a3b623d395ed0e1284a171115c4bc24e11c5ffa5`
 
-Updated: 2026-06-14
+Updated: 2026-08-30
 
 Notes:
 - This checkpoint records the full Cheesy Arena commit last reviewed for portable, game-agnostic changes.
