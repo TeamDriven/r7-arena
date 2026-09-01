@@ -7,11 +7,11 @@ package web
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/tournament"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/tournament"
+	"github.com/TeamDriven/r7-arena/websocket"
 	"github.com/mitchellh/mapstructure"
 	"io"
 	"log"

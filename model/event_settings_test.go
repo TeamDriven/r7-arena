@@ -4,7 +4,7 @@
 package model
 
 import (
-	"github.com/Team254/cheesy-arena-lite/game"
+	"github.com/TeamDriven/r7-arena/game"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -25,8 +25,16 @@ func TestEventSettingsReadWrite(t *testing.T) {
 	assert.True(t, eventSettings.TbaDownloadEnabled)
 	assert.False(t, eventSettings.TbaPublishingEnabled)
 	assert.Equal(t, 36, eventSettings.ApChannel)
-	assert.Equal(t, "configure terminal\ninterface range gigabitEthernet 1/2-4\nno shutdown\nexit\nexit\nexit", eventSettings.SCCUpCommands)
-	assert.Equal(t, "configure terminal\ninterface range gigabitEthernet 1/2-4\nshutdown\nexit\nexit\nexit", eventSettings.SCCDownCommands)
+	assert.Equal(
+		t,
+		"configure terminal\ninterface range gigabitEthernet 1/2-4\nno shutdown\nexit\nexit\nexit",
+		eventSettings.SCCUpCommands,
+	)
+	assert.Equal(
+		t,
+		"configure terminal\ninterface range gigabitEthernet 1/2-4\nshutdown\nexit\nexit\nexit",
+		eventSettings.SCCDownCommands,
+	)
 	assert.Equal(t, game.MatchTiming.AutoDurationSec, eventSettings.AutoDurationSec)
 	assert.Equal(t, game.MatchTiming.PauseDurationSec, eventSettings.PauseDurationSec)
 	assert.Equal(t, game.MatchTiming.TeleopDurationSec, eventSettings.TeleopDurationSec)

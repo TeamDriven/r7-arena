@@ -9,7 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"io"
 	"net/http"
 	"os"
@@ -167,8 +167,10 @@ func checkTbaPostResponse(resp *http.Response) error {
 			return fmt.Errorf("Got status code %d from TBA and failed to read response body: %w", resp.StatusCode, err)
 		}
 		if closeErr != nil {
-			return fmt.Errorf("Got status code %d from TBA: %s; failed to close response body: %w",
-				resp.StatusCode, body, closeErr)
+			return fmt.Errorf(
+				"Got status code %d from TBA: %s; failed to close response body: %w",
+				resp.StatusCode, body, closeErr,
+			)
 		}
 		return fmt.Errorf("Got status code %d from TBA: %s", resp.StatusCode, body)
 	}

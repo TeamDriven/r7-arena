@@ -7,7 +7,7 @@ package field
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"log"
 	"math"
 	"time"

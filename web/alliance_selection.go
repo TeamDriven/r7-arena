@@ -7,9 +7,9 @@ package web
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/tournament"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/tournament"
+	"github.com/TeamDriven/r7-arena/websocket"
 	"io"
 	"log"
 	"net/http"

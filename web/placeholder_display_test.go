@@ -4,11 +4,12 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"testing"
+
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestPlaceholderDisplay(t *testing.T) {
@@ -20,7 +21,7 @@ func TestPlaceholderDisplay(t *testing.T) {
 
 	recorder = web.getHttpResponse("/display?displayId=1")
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Body.String(), "Placeholder Display - Untitled Event - Cheesy Arena")
+	assert.Contains(t, recorder.Body.String(), "Placeholder Display - Untitled Event - R7 Arena")
 }
 
 func TestPlaceholderDisplayWebsocket(t *testing.T) {

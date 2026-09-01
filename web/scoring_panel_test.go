@@ -4,12 +4,13 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/websocket"
-	gorillawebsocket "github.com/gorilla/websocket"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/websocket"
+	gorillawebsocket "github.com/gorilla/websocket"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestScoringPanel(t *testing.T) {
@@ -17,7 +18,7 @@ func TestScoringPanel(t *testing.T) {
 
 	recorder := web.getHttpResponse("/panels/scoring")
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Body.String(), "Scoring Panel - Untitled Event - Cheesy Arena")
+	assert.Contains(t, recorder.Body.String(), "Scoring Panel - Untitled Event - R7 Arena")
 	assert.Contains(t, recorder.Body.String(), "Endgame")
 	assert.NotContains(t, recorder.Body.String(), "Tower")
 }
@@ -38,10 +39,12 @@ func TestScoringPanelWebsocket(t *testing.T) {
 	readWebsocketType(t, ws, "matchTime")
 	readWebsocketType(t, ws, "realtimeScore")
 
-	ws.Write("score", scoringPanelScoreMessage{
-		RedAuto: 3, RedTeleop: 7, RedPostMatch: 2,
-		BlueAuto: 4, BlueTeleop: 5, BluePostMatch: 6,
-	})
+	ws.Write(
+		"score", scoringPanelScoreMessage{
+			RedAuto: 3, RedTeleop: 7, RedPostMatch: 2,
+			BlueAuto: 4, BlueTeleop: 5, BluePostMatch: 6,
+		},
+	)
 	readWebsocketType(t, ws, "realtimeScore")
 	assert.Equal(t, 3, web.arena.RedRealtimeScore.CurrentScore.AutoPoints)
 	assert.Equal(t, 7, web.arena.RedRealtimeScore.CurrentScore.TeleopPoints)

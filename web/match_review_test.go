@@ -6,8 +6,8 @@ package web
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
 	"github.com/stretchr/testify/assert"
 	"net/url"
 	"testing"
@@ -53,12 +53,14 @@ func TestMatchReviewEditExistingResult(t *testing.T) {
 
 	postBody := fmt.Sprintf(
 		"matchResultJson=%s",
-		url.QueryEscape(fmt.Sprintf(
-			`{"MatchId":%d,"RedScore":{"AutoPoints":1,"TeleopPoints":2,"PostMatchPoints":3},`+
-				`"BlueScore":{"AutoPoints":4,"TeleopPoints":5,"PostMatchPoints":6,"FoulPointsAgainst":7},`+
-				`"RedCards":{"105":"yellow"},"BlueCards":{}}`,
-			match.Id,
-		)),
+		url.QueryEscape(
+			fmt.Sprintf(
+				`{"MatchId":%d,"RedScore":{"AutoPoints":1,"TeleopPoints":2,"PostMatchPoints":3},`+
+					`"BlueScore":{"AutoPoints":4,"TeleopPoints":5,"PostMatchPoints":6,"FoulPointsAgainst":7},`+
+					`"RedCards":{"105":"yellow"},"BlueCards":{}}`,
+				match.Id,
+			),
+		),
 	)
 	recorder = web.postHttpResponse(fmt.Sprintf("/match_review/%d/edit", match.Id), postBody)
 	assert.Equal(t, 303, recorder.Code, recorder.Body.String())
@@ -79,12 +81,14 @@ func TestMatchReviewEditCurrentMatch(t *testing.T) {
 
 	postBody := fmt.Sprintf(
 		"matchResultJson=%s",
-		url.QueryEscape(fmt.Sprintf(
-			`{"MatchId":%d,"RedScore":{"AutoPoints":1,"TeleopPoints":2,"PostMatchPoints":3},`+
-				`"BlueScore":{"AutoPoints":4,"TeleopPoints":5,"FoulPointsAgainst":6},`+
-				`"RedCards":{"105":"yellow"},"BlueCards":{}}`,
-			match.Id,
-		)),
+		url.QueryEscape(
+			fmt.Sprintf(
+				`{"MatchId":%d,"RedScore":{"AutoPoints":1,"TeleopPoints":2,"PostMatchPoints":3},`+
+					`"BlueScore":{"AutoPoints":4,"TeleopPoints":5,"FoulPointsAgainst":6},`+
+					`"RedCards":{"105":"yellow"},"BlueCards":{}}`,
+				match.Id,
+			),
+		),
 	)
 	recorder := web.postHttpResponse("/match_review/current/edit", postBody)
 	assert.Equal(t, 303, recorder.Code, recorder.Body.String())
@@ -92,8 +96,16 @@ func TestMatchReviewEditCurrentMatch(t *testing.T) {
 
 	match2, _ := web.arena.Database.GetMatchById(match.Id)
 	assert.Equal(t, game.MatchScheduled, match2.Status)
-	assert.Equal(t, game.Score{AutoPoints: 1, TeleopPoints: 2, PostMatchPoints: 3}, web.arena.RedRealtimeScore.CurrentScore)
-	assert.Equal(t, game.Score{AutoPoints: 4, TeleopPoints: 5, FoulPointsAgainst: 6}, web.arena.BlueRealtimeScore.CurrentScore)
+	assert.Equal(
+		t,
+		game.Score{AutoPoints: 1, TeleopPoints: 2, PostMatchPoints: 3},
+		web.arena.RedRealtimeScore.CurrentScore,
+	)
+	assert.Equal(
+		t,
+		game.Score{AutoPoints: 4, TeleopPoints: 5, FoulPointsAgainst: 6},
+		web.arena.BlueRealtimeScore.CurrentScore,
+	)
 	assert.Equal(t, "yellow", web.arena.RedRealtimeScore.Cards["105"])
 }
 

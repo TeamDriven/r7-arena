@@ -8,7 +8,7 @@ package model
 import (
 	"strings"
 
-	"github.com/Team254/cheesy-arena-lite/game"
+	"github.com/TeamDriven/r7-arena/game"
 )
 
 type PlayoffType int

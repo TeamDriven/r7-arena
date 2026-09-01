@@ -6,10 +6,10 @@
 package field
 
 import (
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/playoff"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/playoff"
+	"github.com/TeamDriven/r7-arena/websocket"
 	"log"
 	"strconv"
 )
@@ -156,8 +156,10 @@ func (arena *Arena) GenerateMatchLoadMessage() any {
 
 	matchResult, err := arena.Database.GetMatchResultForMatch(arena.CurrentMatch.Id)
 	if err != nil {
-		log.Printf("Failed to get match result for match %d while generating match load message: %v",
-			arena.CurrentMatch.Id, err)
+		log.Printf(
+			"Failed to get match result for match %d while generating match load message: %v",
+			arena.CurrentMatch.Id, err,
+		)
 	}
 	isReplay := matchResult != nil
 
@@ -169,8 +171,10 @@ func (arena *Arena) GenerateMatchLoadMessage() any {
 		matchup, _ = matchGroup.(*playoff.Matchup)
 		redOffFieldTeamIds, blueOffFieldTeamIds, err := arena.Database.GetOffFieldTeamIds(arena.CurrentMatch)
 		if err != nil {
-			log.Printf("Failed to get off-field teams for match %d while generating match load message: %v",
-				arena.CurrentMatch.Id, err)
+			log.Printf(
+				"Failed to get off-field teams for match %d while generating match load message: %v",
+				arena.CurrentMatch.Id, err,
+			)
 		}
 		for _, teamId := range redOffFieldTeamIds {
 			team, err := arena.Database.GetTeamById(teamId)
@@ -280,8 +284,10 @@ func (arena *Arena) GenerateScorePostedMessage() any {
 		var err error
 		redOffFieldTeamIds, blueOffFieldTeamIds, err = arena.Database.GetOffFieldTeamIds(arena.SavedMatch)
 		if err != nil {
-			log.Printf("Failed to get off-field teams for match %d while generating score posted message: %v",
-				arena.SavedMatch.Id, err)
+			log.Printf(
+				"Failed to get off-field teams for match %d while generating score posted message: %v",
+				arena.SavedMatch.Id, err,
+			)
 		}
 	}
 

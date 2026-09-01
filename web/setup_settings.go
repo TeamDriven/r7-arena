@@ -7,8 +7,8 @@ package web
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/model"
 	"io"
 	"log"
 	"net/http"
@@ -71,7 +71,13 @@ func (web *Web) settingsPostHandler(w http.ResponseWriter, r *http.Request) {
 			numAlliances, _ = strconv.Atoi(r.PostFormValue("numPlayoffAlliances"))
 		}
 		if numAlliances < 2 || numAlliances > 16 {
-			web.renderSettingsWithStatus(w, r, "Number of alliances must be between 2 and 16.", activeSettingsTab, http.StatusOK)
+			web.renderSettingsWithStatus(
+				w,
+				r,
+				"Number of alliances must be between 2 and 16.",
+				activeSettingsTab,
+				http.StatusOK,
+			)
 			return
 		}
 	} else {
@@ -100,7 +106,10 @@ func (web *Web) settingsPostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if len(alliances) > 0 {
 			web.renderSettingsWithStatus(
-				w, r, "Cannot change playoff type or size after alliance selection has been finalized.", activeSettingsTab,
+				w,
+				r,
+				"Cannot change playoff type or size after alliance selection has been finalized.",
+				activeSettingsTab,
 				http.StatusOK,
 			)
 			return

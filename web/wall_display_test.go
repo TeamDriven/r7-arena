@@ -4,7 +4,7 @@
 package web
 
 import (
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -26,7 +26,7 @@ func TestWallDisplay(t *testing.T) {
 		"/displays/wall?displayId=1&background=%23fff&message=hello+there&reversed=true&topSpacingPx=10&zoomFactor=2",
 	)
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Body.String(), "Wall Display - Untitled Event - Cheesy Arena")
+	assert.Contains(t, recorder.Body.String(), "Wall Display - Untitled Event - R7 Arena")
 }
 
 func TestWallDisplayWebsocket(t *testing.T) {

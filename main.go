@@ -5,9 +5,9 @@ package main
 
 import (
 	"flag"
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/network"
-	"github.com/Team254/cheesy-arena-lite/web"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/network"
+	"github.com/TeamDriven/r7-arena/web"
 	"log"
 )
 

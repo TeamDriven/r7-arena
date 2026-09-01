@@ -8,8 +8,8 @@ package web
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/game"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/game"
+	"github.com/TeamDriven/r7-arena/model"
 	"net/http"
 	"strconv"
 )

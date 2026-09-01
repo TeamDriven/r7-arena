@@ -4,7 +4,7 @@
 package model
 
 import (
-	"github.com/Team254/cheesy-arena-lite/game"
+	"github.com/TeamDriven/r7-arena/game"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"

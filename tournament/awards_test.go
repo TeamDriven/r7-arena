@@ -4,7 +4,7 @@
 package tournament
 
 import (
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

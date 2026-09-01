@@ -7,7 +7,7 @@ package web
 
 import (
 	"fmt"
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"github.com/google/uuid"
 	"log"
 	"net/http"

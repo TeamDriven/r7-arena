@@ -11,9 +11,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Team254/cheesy-arena-lite/field"
-	"github.com/Team254/cheesy-arena-lite/model"
-	"github.com/Team254/cheesy-arena-lite/websocket"
+	"github.com/TeamDriven/r7-arena/field"
+	"github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/websocket"
 	"github.com/mitchellh/mapstructure"
 )
 

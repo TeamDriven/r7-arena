@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Team254/cheesy-arena-lite/model"
+	"github.com/TeamDriven/r7-arena/model"
 )
 
 const (
@@ -155,8 +155,10 @@ func (ap *AccessPoint) ConfigureTeamWifi(teams [6]*model.Team) error {
 	if httpResponse.StatusCode/100 != 2 {
 		body, err := io.ReadAll(httpResponse.Body)
 		if err != nil {
-			return fmt.Errorf("access point returned status %d and failed to read response body: %w",
-				httpResponse.StatusCode, err)
+			return fmt.Errorf(
+				"access point returned status %d and failed to read response body: %w",
+				httpResponse.StatusCode, err,
+			)
 		}
 		return fmt.Errorf("access point returned status %d: %s", httpResponse.StatusCode, string(body))
 	}
@@ -195,8 +197,10 @@ func (ap *AccessPoint) updateMonitoring() error {
 		ap.Status = "ERROR"
 		body, err := io.ReadAll(httpResponse.Body)
 		if err != nil {
-			return fmt.Errorf("access point returned status %d and failed to read response body: %w",
-				httpResponse.StatusCode, err)
+			return fmt.Errorf(
+				"access point returned status %d and failed to read response body: %w",
+				httpResponse.StatusCode, err,
+			)
 		}
 		return fmt.Errorf("access point returned status %d: %s", httpResponse.StatusCode, string(body))
 	}
