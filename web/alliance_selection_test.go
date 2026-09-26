@@ -4,14 +4,13 @@
 package web
 
 import (
-	"testing"
-
 	"github.com/Team254/cheesy-arena-lite/game"
 	"github.com/Team254/cheesy-arena-lite/model"
 	"github.com/Team254/cheesy-arena-lite/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestAllianceSelection(t *testing.T) {
@@ -100,7 +99,10 @@ func TestAllianceSelection(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 16, len(matches))
 	team, _ := web.arena.Database.GetTeamById(254)
-	assert.False(t, team.YellowCard)
+	assert.True(t, team.YellowCard) // Qualification cards are untouched by alliance selection.
+	for _, alliance := range alliances {
+		assert.False(t, alliance.YellowCard)
+	}
 }
 
 func TestAllianceSelectionErrors(t *testing.T) {

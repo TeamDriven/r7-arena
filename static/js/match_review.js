@@ -49,9 +49,13 @@ const updateResults = function (alliance) {
   result.score.FoulPointsAgainst = parseFormInt(formData[`${alliance}FoulPointsAgainst`]);
 
   result.cards = {};
-  $.each(result.teams, function (i, team) {
-    result.cards[team] = formData[`${alliance}Team${team}Card`];
-  });
+  if (isPlayoff) {
+    result.playoffAllianceCard = formData[`${alliance}PlayoffAllianceCard`] || "";
+  } else {
+    $.each(result.teams, function (i, team) {
+      result.cards[team] = formData[`${alliance}Team${team}Card`];
+    });
+  }
 };
 
 const updateAllResults = function () {
@@ -62,10 +66,16 @@ const updateAllResults = function () {
   matchResult.BlueScore = allianceResults["blue"].score;
   matchResult.RedCards = allianceResults["red"].cards;
   matchResult.BlueCards = allianceResults["blue"].cards;
+  matchResult.PlayoffRedAllianceCard = isPlayoff ? allianceResults.red.playoffAllianceCard : "";
+  matchResult.PlayoffBlueAllianceCard = isPlayoff ? allianceResults.blue.playoffAllianceCard : "";
 };
 
 const renderCards = function (alliance) {
   const result = allianceResults[alliance];
+  if (isPlayoff) {
+    getInputElement(alliance, "PlayoffAllianceCard", result.playoffAllianceCard || "").prop("checked", true);
+    return;
+  }
   $.each(result.cards, function (team, card) {
     getInputElement(alliance, `Team${team}Card`, card).prop("checked", true);
   });
@@ -105,7 +115,7 @@ const updateSummaryCard = function (alliance, summary) {
 const getInputElement = function (alliance, name, value) {
   let selector = `input[name=${alliance}${name}]`;
   if (value !== undefined) {
-    selector += `[value=${value}]`;
+    selector += `[value="${value}"]`;
   }
   return $(selector);
 };

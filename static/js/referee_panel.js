@@ -8,6 +8,7 @@ let refCommitted = false;
 let controlsAvailable = false;
 let scoreIsReady = false;
 let isPostMatch = false;
+let isPlayoff = false;
 
 const parseFoulInput = function (selector) {
   const value = parseInt($(selector).val(), 10);
@@ -46,7 +47,7 @@ var cycleCard = function (cardButton) {
     }
     websocket.send(
       "card",
-      {Alliance: $(cardButton).attr("data-alliance"), TeamId: parseInt($(cardButton).attr("data-team")), Card: newCard}
+      {Alliance: $(cardButton).attr("data-alliance"), TeamId: isPlayoff ? 0 : parseInt($(cardButton).attr("data-team")), Card: newCard}
     );
     $(cardButton).attr("data-card", newCard);
     return;
@@ -97,17 +98,26 @@ var commitAndPost = function () {
 
 var handleMatchLoad = function (data) {
   $("#matchName").text(data.Match.LongName);
+  isPlayoff = data.Match.Type === matchTypePlayoff;
+  for (const alliance of ["red", "blue"]) {
+    const color = alliance === "red" ? "Red" : "Blue";
+    $(`#${alliance}AllianceCard`).text(`Alliance ${data.Match[`Playoff${color}Alliance`]}`)
+      .attr("data-old-yellow-card", data[`Playoff${color}AllianceYellowCard`])
+      .attr("data-card", "");
+  }
+  updateCardControls();
 
-  setTeamCard("red", 1, data.Teams["R1"]);
-  setTeamCard("red", 2, data.Teams["R2"]);
-  setTeamCard("red", 3, data.Teams["R3"]);
-  setTeamCard("blue", 1, data.Teams["B1"]);
-  setTeamCard("blue", 2, data.Teams["B2"]);
-  setTeamCard("blue", 3, data.Teams["B3"]);
+  setTeamCard("red", 1, data.Teams["R1"], data.PlayoffRedAllianceYellowCard);
+  setTeamCard("red", 2, data.Teams["R2"], data.PlayoffRedAllianceYellowCard);
+  setTeamCard("red", 3, data.Teams["R3"], data.PlayoffRedAllianceYellowCard);
+  setTeamCard("blue", 1, data.Teams["B1"], data.PlayoffBlueAllianceYellowCard);
+  setTeamCard("blue", 2, data.Teams["B2"], data.PlayoffBlueAllianceYellowCard);
+  setTeamCard("blue", 3, data.Teams["B3"], data.PlayoffBlueAllianceYellowCard);
 };
 
 const handleMatchTime = function (data) {
 	isPostMatch = matchStates[data.MatchState] === "POST_MATCH";
+	updateCardControls();
 	controlsAvailable = isPostMatch;
 	if (!controlsAvailable) {
 		refCommitted = false;
@@ -121,9 +131,20 @@ const handleMatchTime = function (data) {
 	updateUIMode();
 };
 
+const updateCardControls = function () {
+  $(".playoff-alliance-card").toggle(isPlayoff && isPostMatch);
+  $(".station-card").toggle(!isPlayoff || !isPostMatch);
+};
+
 const handleRealtimeScore = function (data) {
-  for (const [teamId, card] of Object.entries(Object.assign(data.RedCards, data.BlueCards))) {
-    $(`[data-team="${teamId}"]`).attr("data-card", card);
+  if (isPlayoff) {
+    $("#redAllianceCard").attr("data-card", data.PlayoffRedAllianceCard || "");
+    $("#blueAllianceCard").attr("data-card", data.PlayoffBlueAllianceCard || "");
+  } else {
+    $(".station-card").attr("data-card", "");
+    for (const [teamId, card] of Object.entries({...data.RedCards, ...data.BlueCards})) {
+      $(`[data-team="${teamId}"]`).attr("data-card", card);
+    }
   }
 
   setInputValue("#redFoulPointsAgainst", data.Red.Score.FoulPointsAgainst);
@@ -160,7 +181,7 @@ const updateUIMode = function () {
 	$("#commitButton").attr("data-enabled", controlsAvailable && !refCommitted);
 };
 
-const setTeamCard = function (alliance, position, team) {
+const setTeamCard = function (alliance, position, team, allianceYellowCard) {
   const cardButton = $(`#${alliance}${position}Card`);
   if (team === null) {
     cardButton.text("-");
@@ -169,7 +190,7 @@ const setTeamCard = function (alliance, position, team) {
   } else {
     cardButton.text(team.Id);
     cardButton.attr("data-team", team.Id);
-    cardButton.attr("data-old-yellow-card", team.YellowCard);
+    cardButton.attr("data-old-yellow-card", isPlayoff ? allianceYellowCard : team.YellowCard);
   }
   cardButton.attr("data-card", "");
 };

@@ -13,13 +13,13 @@
       </div>
       <div class="col-sm-6">
         <div class="card card-body bg-red">
-          {{template "alliance_match_result" dict "summary" .RedScoreSummary "cards" .RedCards "rankings" .RedRankings
+          {{template "alliance_match_result" dict "summary" .RedScoreSummary "cards" .RedCards "allianceCard" .PlayoffRedAllianceCard "rankings" .RedRankings
           "rankingPoints" .RedRankingPoints "matchType" .Match.Type}}
         </div>
       </div>
       <div class="col-sm-6">
         <div class="card card-body bg-blue">
-          {{template "alliance_match_result" dict "summary" .BlueScoreSummary "cards" .BlueCards "rankings" .BlueRankings
+          {{template "alliance_match_result" dict "summary" .BlueScoreSummary "cards" .BlueCards "allianceCard" .PlayoffBlueAllianceCard "rankings" .BlueRankings
           "rankingPoints" .BlueRankingPoints "matchType" .Match.Type}}
         </div>
       </div>
@@ -63,12 +63,21 @@
 </div>
 {{end}}
 <h4 class="mt-3">Cards</h4>
+{{if eq .matchType playoffMatch}}
+{{if .allianceCard}}
+<div class="row justify-content-center">
+  <div class="col-sm-6">Alliance</div>
+  <div class="col-sm-4" style="text-transform: capitalize;">{{.allianceCard}}</div>
+</div>
+{{end}}
+{{else}}
 {{range $team, $card := .cards}}
 {{if $card}}
 <div class="row justify-content-center">
   <div class="col-sm-6">Team {{$team}}</div>
   <div class="col-sm-4" style="text-transform: capitalize;">{{$card}}</div>
 </div>
+{{end}}
 {{end}}
 {{end}}
 <h4 class="mt-3">Rankings</h4>

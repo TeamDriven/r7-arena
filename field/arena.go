@@ -65,6 +65,7 @@ type Arena struct {
 	CompanionClient  *partner.CompanionClient
 	AllianceStations map[string]*AllianceStation
 	Displays         map[string]*Display
+	displayRevision  uint64
 	TeamSigns        *TeamSigns
 	ScoringPanelRegistry
 	ArenaNotifiers

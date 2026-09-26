@@ -77,7 +77,7 @@ func TestCommitPlayoffDq(t *testing.T) {
 	matchResult.MatchType = match.Type
 	matchResult.RedScore.AutoPoints = 20
 	matchResult.BlueScore.AutoPoints = 1
-	matchResult.RedCards = map[string]string{"1": "dq"}
+	matchResult.PlayoffRedAllianceCard = "dq"
 
 	assert.Nil(t, web.commitMatchScore(match, matchResult, true))
 	match, _ = web.arena.Database.GetMatchById(match.Id)

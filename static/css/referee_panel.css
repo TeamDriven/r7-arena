@@ -99,6 +99,13 @@ h3 {
   border-radius: 0.25vw;
 }
 
+.playoff-alliance-card {
+  font-size: 1.6vw;
+  white-space: nowrap;
+  color: inherit;
+  border: 0;
+}
+
 .team-card[data-card="yellow"] {
   color: #111;
   background-color: #ffc400;
@@ -222,6 +229,10 @@ h3 {
     width: 42vw;
     height: 12vw;
     font-size: 8vw;
+  }
+
+  .playoff-alliance-card {
+    font-size: 6vw;
   }
 
   #foulPoints label {

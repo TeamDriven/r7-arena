@@ -76,9 +76,17 @@ func TestRefereePanelWebsocket(t *testing.T) {
 		Card     string
 	}{"blue", 1680, "red"})
 	readWebsocketType(t, ws, "realtimeScore")
-	assert.Equal(t, "red", web.arena.BlueRealtimeScore.Cards["1679"])
-	assert.Equal(t, "red", web.arena.BlueRealtimeScore.Cards["1680"])
-	assert.Equal(t, "red", web.arena.BlueRealtimeScore.Cards["1681"])
+	assert.Empty(t, web.arena.BlueRealtimeScore.Cards)
+	assert.Equal(t, "red", web.arena.BlueRealtimeScore.PlayoffAllianceCard)
+	assert.True(t, web.arena.BlueRealtimeScore.CurrentScore.PlayoffDq)
+	ws.Write("card", struct {
+		Alliance string
+		TeamId   int
+		Card     string
+	}{"blue", 0, ""})
+	message := readWebsocketType(t, ws, "realtimeScore").(map[string]any)
+	assert.Equal(t, "", message["PlayoffBlueAllianceCard"])
+	assert.False(t, web.arena.BlueRealtimeScore.CurrentScore.PlayoffDq)
 
 	assert.False(t, web.arena.RedRealtimeScore.FoulsCommitted)
 	assert.False(t, web.arena.BlueRealtimeScore.FoulsCommitted)
