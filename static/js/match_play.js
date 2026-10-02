@@ -313,6 +313,22 @@ const handleArenaStatus = function (data) {
     $("#plc" + name + "Status").attr("data-ready", status);
   });
   $("#ftaReady").attr("data-ready", data.IsFtaReady);
+
+  if (data.ScoringSccConnected) {
+    $("#scoringSccStatus").addClass("scc-indicator-connected");
+  } else {
+    $("#scoringSccStatus").removeClass("scc-indicator-connected");
+  }
+  if (data.RedSccConnected) {
+    $("#redSccStatus").addClass("scc-indicator-connected");
+  } else {
+    $("#redSccStatus").removeClass("scc-indicator-connected");
+  }
+  if (data.BlueSccConnected) {
+    $("#blueSccStatus").addClass("scc-indicator-connected");
+  } else {
+    $("#blueSccStatus").removeClass("scc-indicator-connected");
+  }
 };
 
 // Handles a websocket message to update the teams for the current match.

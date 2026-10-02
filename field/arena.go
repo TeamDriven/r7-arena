@@ -34,6 +34,7 @@ const (
 	preLoadNextMatchDelaySec = 5
 	scheduledBreakDelaySec   = 5
 	earlyLateThresholdMin    = 2.5
+	sccConnectionTimeout     = 5.0
 	MaxMatchGapMin           = 20
 )
 
@@ -56,9 +57,11 @@ type Arena struct {
 	EventSettings    *model.EventSettings
 	accessPoint      network.AccessPoint
 	networkSwitch    *network.Switch
+	dnsMasq          *network.DnsMasq
 	redSCC           *network.SCCSwitch
 	blueSCC          *network.SCCSwitch
 	Plc              plc.Plc
+	Scc              *SCC
 	TbaClient        *partner.TbaClient
 	NexusClient      *partner.NexusClient
 	BlackmagicClient *partner.BlackmagicClient
@@ -154,7 +157,10 @@ func NewArena(dbPath string) (*Arena, error) {
 	arena.AudienceDisplayMode = "blank"
 	arena.SavedMatch = &model.Match{}
 	arena.SavedMatchResult = model.NewMatchResult()
-	arena.AllianceStationDisplayMode = "match"
+	arena.AllianceStationDisplayMode = "logo"
+
+	// Initialize SCC information
+	arena.Scc = NewSCC(arena)
 
 	return arena, nil
 }

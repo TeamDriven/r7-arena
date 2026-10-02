@@ -267,3 +267,28 @@ input[data-changed="true"], select[data-changed="true"] {
     font-style: italic;
     opacity: 0.4;
 }
+.scc-panel {
+  min-height: 12em;
+}
+
+.scc-indicator {
+  border: 2px solid #999;
+  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  line-height: 35px;
+  margin: auto;
+  margin-top: 10px;
+  color: #000;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.scc-indicator-connected {
+  background-color: lime;
+}
+
+.scc-indicator-pushed {
+  background-color: red;
+}
