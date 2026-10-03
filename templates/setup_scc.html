@@ -1,0 +1,72 @@
+{{/*
+Copyright 2018 Team 254. All Rights Reserved.
+Author: pat@patfairbank.com (Patrick Fairbank)
+
+UI for testing the game sounds and PLC connected to the field.
+*/}}
+{{define "title"}}SCC Testing{{end}}
+{{define "body"}}
+<div class="container">
+  <div class="row text-center">
+    <div class="col-lg-6 well well-darkblue scc-panel">
+      <h3>Blue SCC</h3>
+      <div class="row">
+        <div class="col-sm-3">
+          Connected<br/>
+          <div id="blueConnected" class="scc-indicator {{if .BlueConnected}}indicator-connected{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop 1<br/>
+          <div id="blueEstop1" class="scc-indicator {{if .BlueEstop1}}indicator-pushed{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop 2<br/>
+          <div id="blueEstop2" class="scc-indicator {{if .BlueEstop2}}indicator-pushed{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop 3<br/>
+          <div id="blueEstop3" class="scc-indicator {{if .BlueEstop3}}indicator-pushed{{end}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 well well-darkred scc-panel">
+      <h3>Red SCC</h3>
+      <div class="row">
+        <div class="col-sm-3">
+          Connected<br/>
+          <div id="redConnected" class="scc-indicator {{if .RedConnected}}indicator-connected{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop 1<br/>
+          <div id="redEstop1" class="scc-indicator {{if .RedEstop1}}indicator-pushed{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop 2<br/>
+          <div id="redEstop2" class="scc-indicator {{if .RedEstop2}}indicator-pushed{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop 3<br/>
+          <div id="redEstop3" class="scc-indicator {{if .RedEstop3}}indicator-pushed{{end}}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row text-center">
+    <div class="col-lg-6 well scc-panel">
+      <h3>Scoring Table SCC</h3>
+      <div class="row">
+        <div class="col-sm-3">
+          Connected<br/>
+          <div id="scoringConnected" class="scc-indicator {{if .ScoringConnected}}indicator-connected{{end}}"></div>
+        </div>
+        <div class="col-sm-3">
+          eStop<br/>
+          <div id="scoringEstop" class="scc-indicator {{if .ScoringEstop}}indicator-pushed{{end}}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{{end}}
+{{define "script"}}
+<script src="/static/js/scc.js"></script>
+{{end}}

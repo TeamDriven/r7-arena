@@ -99,11 +99,7 @@ UI for controlling match play and viewing team connection and field status.
           <p>
             <span class="badge badge-status" id="accessPointStatus">Access Point</span><br/>
             <span class="badge badge-status" id="switchStatus">Switch</span>
-            {{if .EventSettings.SCCManagementEnabled}}
-            <br/>
-            <span class="badge badge-status" id="redSCCStatus">Red SCC</span><br/>
-            <span class="badge badge-status" id="blueSCCStatus">Blue SCC</span>
-            {{end}}
+
           </p>
           {{end}}
           {{if .PlcIsEnabled}}
@@ -117,6 +113,18 @@ UI for controlling match play and viewing team connection and field status.
 			<span class="badge badge-scoring" id="ftaReady">FTA Ready</span>
           </p>
           {{end}}
+          <h6>SCC Status</h6>
+          <div class="row">
+            <div class="col-lg-3 col-lg-offset-1">
+              <div class="scc-indicator" id="blueSccStatus">B</div>
+            </div>
+            <div class="col-lg-3">
+              <div class="scc-indicator" id="scoringSccStatus">S</div>
+            </div>
+            <div class="col-lg-3">
+              <div class="scc-indicator" id="redSccStatus">R</div>
+            </div>
+          </div>
         </div>
         <div class="col-lg-3">
           <h6>Audience Display</h6>
