@@ -412,7 +412,12 @@ func (arena *Arena) serveDriverStations(listener net.Listener) {
 			// Skip byte 5, which currently contains flags.
 			teamNumberLen := int(packet[6])
 			if packetLen < 5+teamNumberLen || len(packet) < 7+teamNumberLen {
-				log.Printf("Invalid initial packet of length %d received with team number length %d: %v", packetLen, teamNumberLen, packet)
+				log.Printf(
+					"Invalid initial packet of length %d received with team number length %d: %v",
+					packetLen,
+					teamNumberLen,
+					packet,
+				)
 				tcpConn.Close()
 				continue
 			}
@@ -601,13 +606,13 @@ func (dsConn *DriverStationConnection) copyDsReportedStatus(previousDsConn *Driv
 
 // parseDsLogPacket updates DS-reported mode and enable state from a driver station TCP log packet.
 func (dsConn *DriverStationConnection) parseDsLogPacket(packet []byte) {
-	if len(packet) < 8 {
+	if len(packet) < 9 {
 		log.Printf("Received DS log packet with insufficient length from Team %d: %d", dsConn.TeamId, len(packet))
 		return
 	}
 
-	// Packet type 22 carries the DS-side robot status byte at offset 7.
-	statusByte := packet[7]
+	// Packet type 22 carries the DS-side robot status byte at offset 8.
+	statusByte := packet[8]
 	dsConn.DsReportedStatusValid = true
 	dsConn.DsReportedTeleop = statusByte&0x20 != 0
 	dsConn.DsReportedAuto = statusByte&0x10 != 0
@@ -616,7 +621,12 @@ func (dsConn *DriverStationConnection) parseDsLogPacket(packet []byte) {
 }
 
 func handleInvalidTcpConnection(tcpConn net.Conn, status int, station int, isNewDs bool) {
-	log.Printf("Handling invalid TCP connection from %v with status %d and station %d", tcpConn.RemoteAddr(), status, station)
+	log.Printf(
+		"Handling invalid TCP connection from %v with status %d and station %d",
+		tcpConn.RemoteAddr(),
+		status,
+		station,
+	)
 	var assignmentPacket [8]byte
 	sendLength := 8
 	assignmentPacket[0] = 0  // Packet size
