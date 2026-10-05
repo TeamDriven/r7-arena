@@ -34,6 +34,7 @@ const (
 	preLoadNextMatchDelaySec = 5
 	scheduledBreakDelaySec   = 5
 	earlyLateThresholdMin    = 2.5
+	sccConnectionTimeout     = 5.0
 	MaxMatchGapMin           = 20
 )
 
@@ -56,9 +57,11 @@ type Arena struct {
 	EventSettings    *model.EventSettings
 	accessPoint      network.AccessPoint
 	networkSwitch    *network.Switch
+	dnsMasq          *network.DnsMasq
 	redSCC           *network.SCCSwitch
 	blueSCC          *network.SCCSwitch
 	Plc              plc.Plc
+	Scc              *SCC
 	TbaClient        *partner.TbaClient
 	NexusClient      *partner.NexusClient
 	BlackmagicClient *partner.BlackmagicClient
@@ -154,7 +157,10 @@ func NewArena(dbPath string) (*Arena, error) {
 	arena.AudienceDisplayMode = "blank"
 	arena.SavedMatch = &model.Match{}
 	arena.SavedMatchResult = model.NewMatchResult()
-	arena.AllianceStationDisplayMode = "match"
+	arena.AllianceStationDisplayMode = "logo"
+
+	// Initialize SCC information
+	arena.Scc = NewSCC(arena)
 
 	return arena, nil
 }
@@ -192,6 +198,7 @@ func (arena *Arena) LoadSettings() error {
 		accessPointWifiStatuses,
 	)
 	arena.networkSwitch = network.NewSwitch(settings.SwitchAddress, settings.SwitchPassword)
+	arena.dnsMasq = network.NewDnsMasq()
 	sccUpCommands := strings.Split(settings.SCCUpCommands, "\n")
 	sccDownCommands := strings.Split(settings.SCCDownCommands, "\n")
 	arena.redSCC = network.NewSCCSwitch(
@@ -1024,6 +1031,9 @@ func (arena *Arena) setupNetwork(teams [6]*model.Team, isPreload bool) {
 			if err := arena.networkSwitch.ConfigureTeamEthernet(teams); err != nil {
 				log.Printf("Failed to configure team Ethernet: %s", err.Error())
 			}
+			if err := arena.dnsMasq.ConfigureTeamEthernet(teams); err != nil {
+				log.Printf("Failed to configure dnsmasq: %s", err.Error())
+			}
 			arena.setSCCEthernetEnabled(true)
 		}()
 	}
@@ -1049,6 +1059,11 @@ func (arena *Arena) getStartMatchConditions() []string {
 		conditions,
 		arena.getAllianceStationStartConditions("R1", "R2", "R3", "B1", "B2", "B3")...,
 	)
+
+	err := arena.checkSccEstops()
+	if err != nil {
+		conditions = append(conditions, err.Error())
+	}
 
 	if arena.Plc.IsEnabled() {
 		if !arena.Plc.IsHealthy() {
@@ -1084,6 +1099,7 @@ func (arena *Arena) checkAllianceStationsReady(stations ...string) error {
 }
 
 func (arena *Arena) getAllianceStationStartConditions(stations ...string) []string {
+	var conditions []string
 	var eStoppedStations, aStopNotResetStations, disconnectedStations []string
 	for _, station := range stations {
 		allianceStation := arena.AllianceStations[station]
@@ -1097,17 +1113,37 @@ func (arena *Arena) getAllianceStationStartConditions(stations ...string) []stri
 			if allianceStation.DsConn == nil || !allianceStation.DsConn.RobotLinked {
 				disconnectedStations = append(disconnectedStations, station)
 			}
+			if station[0] == 'R' {
+				if !arena.Scc.IsSccConnected("red") {
+					conditions = append(
+						conditions,
+						fmt.Sprintf("cannot start match without red alliance SCC connected"),
+					)
+				}
+			} else if station[0] == 'B' {
+				if !arena.Scc.IsSccConnected("blue") {
+					conditions = append(
+						conditions,
+						fmt.Sprintf("cannot start match without blue alliance SCC connected"),
+					)
+				}
+			}
 		}
 	}
 
-	var conditions []string
 	if len(eStoppedStations) > 0 {
-		conditions = append(conditions, fmt.Sprintf("an emergency stop is active (%s)", strings.Join(eStoppedStations, ", ")))
+		conditions = append(
+			conditions,
+			fmt.Sprintf("an emergency stop is active (%s)", strings.Join(eStoppedStations, ", ")),
+		)
 	}
 	if len(aStopNotResetStations) > 0 {
 		conditions = append(
 			conditions,
-			fmt.Sprintf("an autonomous stop has not been reset since the previous match (%s)", strings.Join(aStopNotResetStations, ", ")),
+			fmt.Sprintf(
+				"an autonomous stop has not been reset since the previous match (%s)",
+				strings.Join(aStopNotResetStations, ", "),
+			),
 		)
 	}
 	if len(disconnectedStations) > 0 {
@@ -1117,6 +1153,20 @@ func (arena *Arena) getAllianceStationStartConditions(stations ...string) []stri
 		)
 	}
 	return conditions
+}
+
+func (arena *Arena) checkSccEstops() error {
+	for alliance, status := range arena.Scc.status {
+		for i := range status.EStops {
+			if status.EStops[i] {
+				return fmt.Errorf(
+					"cannot start match with %s %d emergency stop active",
+					alliance, i+1,
+				)
+			}
+		}
+	}
+	return nil
 }
 
 func (arena *Arena) sendDsPacket(auto bool, enabled bool) {
@@ -1160,13 +1210,12 @@ func (arena *Arena) handlePlcInputOutput() {
 		arena.AbortMatch()
 	}
 	redEStops, blueEStops := arena.Plc.GetTeamEStops()
-	redAStops, blueAStops := arena.Plc.GetTeamAStops()
-	arena.handleTeamStop("R1", redEStops[0], redAStops[0])
-	arena.handleTeamStop("R2", redEStops[1], redAStops[1])
-	arena.handleTeamStop("R3", redEStops[2], redAStops[2])
-	arena.handleTeamStop("B1", blueEStops[0], blueAStops[0])
-	arena.handleTeamStop("B2", blueEStops[1], blueAStops[1])
-	arena.handleTeamStop("B3", blueEStops[2], blueAStops[2])
+	arena.handleTeamStop("R1", redEStops[0])
+	arena.handleTeamStop("R2", redEStops[1])
+	arena.handleTeamStop("R3", redEStops[2])
+	arena.handleTeamStop("B1", blueEStops[0])
+	arena.handleTeamStop("B2", blueEStops[1])
+	arena.handleTeamStop("B3", blueEStops[2])
 	redEthernets, blueEthernets := arena.Plc.GetEthernetConnected()
 	arena.AllianceStations["R1"].Ethernet = redEthernets[0]
 	arena.AllianceStations["R2"].Ethernet = redEthernets[1]
@@ -1217,27 +1266,38 @@ func (arena *Arena) handlePlcInputOutput() {
 
 func (arena *Arena) ToggleBypass(station string) error {
 	if _, ok := arena.AllianceStations[station]; !ok {
-		return fmt.Errorf("Invalid alliance station '%s'.", station)
+		return fmt.Errorf("invalid alliance station '%s'", station)
 	}
-	arena.AllianceStations[station].Bypass = !arena.AllianceStations[station].Bypass
+	if arena.MatchState == AutoPeriod ||
+		arena.MatchState == PausePeriod ||
+		arena.MatchState == TeleopPeriod {
+		arena.EstopClicked(station)
+	} else {
+		arena.AllianceStations[station].Bypass = !arena.AllianceStations[station].Bypass
+	}
 	arena.ArenaStatusNotifier.Notify()
 	return nil
 }
 
-func (arena *Arena) handleTeamStop(station string, eStopState, aStopState bool) {
+func (arena *Arena) EstopClicked(station string) {
+	allianceStation := arena.AllianceStations[station]
+	if arena.MatchState == AutoPeriod {
+		allianceStation.AStop = true
+	}
+	allianceStation.EStop = true
+}
+
+func (arena *Arena) handleTeamStop(station string, eStopState bool) {
 	allianceStation := arena.AllianceStations[station]
 	if eStopState {
-		allianceStation.EStop = true
+		if arena.MatchState == AutoPeriod {
+			allianceStation.AStop = true
+		} else {
+			allianceStation.EStop = true
+		}
 	} else if arena.MatchTimeSec() == 0 {
 		// Keep the E-stop latched until the match is over.
 		allianceStation.EStop = false
-	}
-	if aStopState {
-		allianceStation.AStop = true
-	} else if arena.MatchState != AutoPeriod {
-		// Keep the A-stop latched until the autonomous period is over.
-		allianceStation.AStop = false
-		allianceStation.aStopReset = true
 	}
 }
 

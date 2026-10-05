@@ -30,6 +30,7 @@ type ArenaNotifiers struct {
 	ReloadDisplaysNotifier             *websocket.Notifier
 	ScorePostedNotifier                *websocket.Notifier
 	ScoringStatusNotifier              *websocket.Notifier
+	SCCNotifier                        *websocket.Notifier
 }
 
 type MatchTimeMessage struct {
@@ -65,6 +66,7 @@ func (arena *Arena) configureNotifiers() {
 	arena.ReloadDisplaysNotifier = websocket.NewNotifier("reload", nil)
 	arena.ScorePostedNotifier = websocket.NewNotifier("scorePosted", arena.GenerateScorePostedMessage)
 	arena.ScoringStatusNotifier = websocket.NewNotifier("scoringStatus", arena.generateScoringStatusMessage)
+	arena.SCCNotifier = websocket.NewNotifier("sccstatus", arena.generateSCCStatusMessage)
 }
 
 func (arena *Arena) generateAllianceSelectionMessage() any {
@@ -359,6 +361,10 @@ func (arena *Arena) generateScoringStatusMessage() any {
 		arena.ScoringPanelRegistry.GetNumPanels("scoring"),
 		arena.GetNumScoreCommitted("scoring"),
 	}
+}
+
+func (arena *Arena) generateSCCStatusMessage() any {
+	return arena.Scc.GenerateNotifierStatus()
 }
 
 // Constructs the data object for one alliance sent to the audience display for the realtime scoring overlay.

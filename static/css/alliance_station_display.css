@@ -3,6 +3,13 @@
   Author: nick@team254.com (Nick Eyre)
 */
 
+@font-face {
+  font-family: "Alarm Clock";
+  src:
+    url("/static/css/fonts/alarmclock.woff") format("woff");
+  unicode-range: U+002D, U+0030-0039;
+}
+
 html {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -10,7 +17,7 @@ html {
 }
 body {
   background-color: #000;
-  font-family: "FuturaLTBold";
+  font-family: "FuturaLTBold", sans-serif;
   color: #fff;
 }
 body[data-mode=logo] {
@@ -76,8 +83,8 @@ body[data-mode=timeout] .mode#match {
 }
 #match[data-state=AUTO_PERIOD], #match[data-state=PAUSE_PERIOD], #match[data-state=TELEOP_PERIOD],
 #match[data-state=TIMEOUT_ACTIVE], #match[data-state=POST_TIMEOUT] {
-  background-color: #fff;
-  color: #000;
+  background-color: #000;
+  color: #f00;
 }
 #preMatch, #inMatch {
   display: none;
@@ -97,13 +104,18 @@ body[data-mode=timeout] .mode#match {
   position: absolute;
   left: 0;
   right: 0;
-  margin: auto;
-  margin-top: -250px;
+  margin: -250px auto auto;
   height: 250px;
   top: 50%;
   font-size: 500px;
   line-height: 500px;
   text-align: center;
+  font-family: "Alarm Clock", "FuturaLTBold", sans-serif;
+}
+@media only screen and (max-height: 390px) {
+  #inMatch .datapoint {
+    font-size: 380px;
+  }
 }
 body[data-position=left] #inMatch #redScore {
   display: block;
@@ -138,12 +150,12 @@ body[data-position=right] #inMatch #blueScore {
   height: 200px;
   line-height: 200px;
   text-align: center;
-  font-family: "FuturaLT";
+  font-family: "FuturaLT", sans-serif;
   font-size: 120px;
   color: #fff;
 }
 #preMatch .databar#disabled {
-  font-family: "FuturaLTBold";
+  font-family: "FuturaLTBold", sans-serif;
   display: none;
 }
 #preMatch sub {
@@ -171,6 +183,6 @@ body[data-position=right] #inMatch #blueScore {
   right: 0;
   margin: 0 auto;
   text-align: center;
-  font-family: "FuturaLT";
+  font-family: "FuturaLT", sans-serif;
   font-size: 50px;
 }
