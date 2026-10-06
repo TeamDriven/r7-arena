@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/TeamDriven/r7-arena/game"
-  "github.com/TeamDriven/r7-arena/model"
+	"github.com/TeamDriven/r7-arena/model"
 	"io"
 	"log"
 	"net/http"
