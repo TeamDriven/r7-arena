@@ -5,13 +5,13 @@
 
 ## Build, Test, and Development Commands
 See `go.mod` for what version of Go to use.
-1. `go build`
-   Builds the `cheesy-arena` binary in the repo root.
-1. `./cheesy-arena`
+1. `make`
+   Builds the `r7-arena` binary in the r7-arena folder.
+2. `./r7-arena/r7-arena`
    Runs the server; open `http://localhost:8080` in a browser.
-1. `go test ./...`
+3. `go test ./...`
    Runs all Go tests across packages. Should be run after making any code changes to ensure nothing is broken.
-1. `go fmt ./...`
+4. `go fmt ./...`
    Formats all Go code in the repo. Should be run after making any code changes to ensure consistent style.
 
 ## Coding Style & Naming Conventions
@@ -27,8 +27,8 @@ Commit messages in this repo are short, imperative sentences (for example “Fix
 
 PRs should include:
 1. A clear summary of the change.
-1. Test notes (exact commands run, for example `go test ./...`).
-1. UI screenshots when changing pages in `web/`, `static/`, or `templates/`.
+2. Test notes (exact commands run, for example `go test ./...`).
+3. UI screenshots when changing pages in `web/`, `static/`, or `templates/`.
 
 ## Configuration & Ops Notes
 Cheesy Arena is designed to run as a local web server and uses BoltDB for data. For field networking and hardware integrations, see the project README and relevant `field/` or `plc/` code before making behavioral changes.
@@ -39,8 +39,8 @@ This repo is the generic-only lite fork. When asked to check the full Cheesy Are
 Track the last reviewed upstream commit in `UPSTREAM.md`, not in this file. To inspect candidate changes, compare that checkpoint against the sibling repo:
 
 1. `git -C ../cheesy-arena log --oneline <last-reviewed>..HEAD`
-1. `git -C ../cheesy-arena diff --stat <last-reviewed>..HEAD`
-1. Inspect promising commits or paths with `git -C ../cheesy-arena show <commit>` or path-limited diffs.
+2. `git -C ../cheesy-arena diff --stat <last-reviewed>..HEAD`
+3. Inspect promising commits or paths with `git -C ../cheesy-arena show <commit>` or path-limited diffs.
 
 Port only game-agnostic changes. Preserve this repo's module path, repository identity, remotes, and generic-only behavior. Do not reintroduce game-mode branching, year-specific scoring, LED/game-specific hardware hooks, TBA publishing flows, or removed generic-vs-game scaffolding such as `GameMode`, `ScoreGeneric`, `RankingFieldsGeneric`, or `IsGenericMode`.
 

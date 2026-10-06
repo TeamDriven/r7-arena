@@ -7,7 +7,6 @@ all:
 	go build -o r7-arena/
 	cp -r $(ASSET_FILES) r7-arena/
 	chmod +x ./r7-arena/r7-arena
-	./r7-arena/r7-arena
 
 windows:
 	rm -rf r7-arena/
