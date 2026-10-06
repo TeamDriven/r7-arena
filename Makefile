@@ -1,4 +1,4 @@
-ASSET_FILES := LICENSE README.md fix_avatar_colors_for_overlay font schedules static switch_config.txt templates tunnel event.db
+ASSET_FILES := LICENSE README.md fix_avatar_colors_for_overlay font schedules static switch_config.txt templates tunnel
 
 all:
 	sudo /sbin/rc-service r7-arena stop
@@ -10,5 +10,6 @@ all:
 	mkdir r7-arena
 	go build -o r7-arena/
 	cp -r $(ASSET_FILES) r7-arena/
+	test -f event.db && cp event.db r7-arena/
 	chmod +x ./r7-arena/r7-arena
 	sudo /sbin/rc-service r7-arena start
