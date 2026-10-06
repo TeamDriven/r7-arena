@@ -8,23 +8,31 @@ package network
 import (
 	"bufio"
 	"fmt"
+	"github.com/TeamDriven/r7-arena/model"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/TeamDriven/r7-arena/model"
 )
 
 type DnsMasq struct {
-	mutex sync.Mutex
+	configDir      string
+	restartService func() error
+	mutex          sync.Mutex
 }
 
 func NewDnsMasq() *DnsMasq {
-	return &DnsMasq{}
+	return &DnsMasq{
+		configDir: "/etc/dnsmasq.d",
+		restartService: func() error {
+			cmd := exec.Command("/usr/bin/sudo", "/usr/bin/systemctl", "restart", "dnsmasq")
+			return cmd.Run()
+		},
+	}
 }
 
 func (dm *DnsMasq) ConfigureTeamEthernet(teams [6]*model.Team) error {
@@ -37,10 +45,12 @@ func (dm *DnsMasq) ConfigureTeamEthernet(teams [6]*model.Team) error {
 	if err != nil {
 		return err
 	}
+	activeVlans := make(map[int]bool)
 	replaceTeamVlan := func(team *model.Team, vlan int) {
 		if team == nil {
 			return
 		}
+		activeVlans[vlan] = true
 		if oldTeamVlans[team.Id] == vlan {
 			delete(oldTeamVlans, team.Id)
 		} else {
@@ -54,7 +64,7 @@ func (dm *DnsMasq) ConfigureTeamEthernet(teams [6]*model.Team) error {
 				vlan, team.Id, vlan, teamPartialIp, teamPartialIp,
 				vlan, teamPartialIp,
 			))
-			err := ioutil.WriteFile(fmt.Sprintf("/etc/dnsmasq.d/vlan%d.conf", vlan), contents, 0664)
+			err := ioutil.WriteFile(filepath.Join(dm.configDir, fmt.Sprintf("vlan%d.conf", vlan)), contents, 0664)
 			if err != nil {
 				log.Printf("Failed to configure VLAN%d for team %d: %s", vlan, team.Id, err.Error())
 				return
@@ -70,21 +80,24 @@ func (dm *DnsMasq) ConfigureTeamEthernet(teams [6]*model.Team) error {
 
 	// Remove configuration files for VLANs no longer needed
 	for _, vlan := range oldTeamVlans {
-		os.Remove(fmt.Sprintf("/etc/dnsmasq.d/vlan%d.conf", vlan))
+		if !activeVlans[vlan] {
+			os.Remove(filepath.Join(dm.configDir, fmt.Sprintf("vlan%d.conf", vlan)))
+		}
 	}
 
 	// Restart the dnsmasq service
-	cmd := exec.Command("/usr/bin/sudo", "/usr/bin/systemctl", "restart", "dnsmasq")
-	err = cmd.Run()
-	if err != nil {
-		return err
+	if dm.restartService != nil {
+		err = dm.restartService()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (dm *DnsMasq) getTeamVlans() (map[int]int, error) {
-	files, err := ioutil.ReadDir("/etc/dnsmasq.d")
+	files, err := ioutil.ReadDir(dm.configDir)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +110,7 @@ func (dm *DnsMasq) getTeamVlans() (map[int]int, error) {
 			// Skip vlan 100
 			continue
 		}
-		if !strings.HasPrefix(fn, "vlan") && !strings.HasSuffix(fn, ".conf") {
+		if !strings.HasPrefix(fn, "vlan") || !strings.HasSuffix(fn, ".conf") {
 			// skip files that don't match vlan*.conf
 			continue
 		}
@@ -107,7 +120,7 @@ func (dm *DnsMasq) getTeamVlans() (map[int]int, error) {
 			return nil, err
 		}
 
-		fh, err := os.Open("/etc/dnsmasq.d/" + fn)
+		fh, err := os.Open(filepath.Join(dm.configDir, fn))
 		if err != nil {
 			return nil, err
 		}

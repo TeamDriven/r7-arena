@@ -79,6 +79,42 @@ func TestArenaCheckCanStartMatch(t *testing.T) {
 	arena.AllianceStations["B3"].Bypass = true
 	assert.Nil(t, arena.checkCanStartMatch())
 
+	// Check SCC constraints.
+	arena.AllianceStations["R1"].Bypass = false
+	arena.Scc.Disconnect("red")
+	err = arena.checkCanStartMatch()
+	if assert.NotNil(t, err) {
+		assert.Contains(t, err.Error(), "cannot start match without red alliance SCC connected")
+	}
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "red", EStops: []bool{false, false, false}})
+	arena.AllianceStations["R1"].Bypass = true
+
+	arena.AllianceStations["B1"].Bypass = false
+	arena.Scc.Disconnect("blue")
+	err = arena.checkCanStartMatch()
+	if assert.NotNil(t, err) {
+		assert.Contains(t, err.Error(), "cannot start match without blue alliance SCC connected")
+	}
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "blue", EStops: []bool{false, false, false}})
+	arena.AllianceStations["B1"].Bypass = true
+	assert.Nil(t, arena.checkCanStartMatch())
+
+	// Check SCC E-stop constraints.
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "red", EStops: []bool{true, false, false}})
+	err = arena.checkCanStartMatch()
+	if assert.NotNil(t, err) {
+		assert.Contains(t, err.Error(), "cannot start match with red 1 emergency stop active")
+	}
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "red", EStops: []bool{false, false, false}})
+
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "blue", EStops: []bool{false, true, false}})
+	err = arena.checkCanStartMatch()
+	if assert.NotNil(t, err) {
+		assert.Contains(t, err.Error(), "cannot start match with blue 2 emergency stop active")
+	}
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "blue", EStops: []bool{false, false, false}})
+	assert.Nil(t, arena.checkCanStartMatch())
+
 	// Check PLC constraints.
 	arena.Plc.SetAddress("1.2.3.4")
 	err = arena.checkCanStartMatch()
@@ -734,10 +770,8 @@ func TestPlcEStopAStop(t *testing.T) {
 	assert.Equal(t, AutoPeriod, arena.MatchState)
 	assert.Equal(t, true, arena.AllianceStations["R1"].DsConn.Enabled)
 
-	// Press the R1 A-stop.
-	plc.redAStops[0] = true
-	plc.redEStops[0] = false
-	plc.redAStops[1] = false
+	// Press the R1 stop button during Auto (triggers A-stop).
+	plc.redEStops[0] = true
 	plc.redEStops[1] = false
 	arena.Update()
 	assert.Equal(t, true, arena.AllianceStations["R1"].AStop)
@@ -751,35 +785,31 @@ func TestPlcEStopAStop(t *testing.T) {
 	assert.Equal(t, true, arena.AllianceStations["R1"].DsConn.AStop)
 	assert.Equal(t, true, arena.AllianceStations["R2"].DsConn.Enabled)
 
-	// Unpress the R1 A-stop and press the R2 E-stop.
-	plc.redAStops[0] = false
+	// Unpress the R1 stop and press the R2 stop during Auto.
 	plc.redEStops[0] = false
-	plc.redAStops[1] = false
 	plc.redEStops[1] = true
 	arena.Update()
 	assert.Equal(t, true, arena.AllianceStations["R1"].AStop)
 	assert.Equal(t, false, arena.AllianceStations["R1"].EStop)
-	assert.Equal(t, false, arena.AllianceStations["R2"].AStop)
-	assert.Equal(t, true, arena.AllianceStations["R2"].EStop)
+	assert.Equal(t, true, arena.AllianceStations["R2"].AStop)
+	assert.Equal(t, false, arena.AllianceStations["R2"].EStop)
 	arena.lastDsPacketTime = time.Unix(0, 0) // Force a DS packet.
 	arena.Update()
 	assert.Equal(t, false, arena.AllianceStations["R1"].DsConn.Enabled)
 	assert.Equal(t, false, arena.AllianceStations["R1"].DsConn.EStop)
 	assert.Equal(t, true, arena.AllianceStations["R1"].DsConn.AStop)
 	assert.Equal(t, false, arena.AllianceStations["R2"].DsConn.Enabled)
-	assert.Equal(t, true, arena.AllianceStations["R2"].DsConn.EStop)
-	assert.Equal(t, false, arena.AllianceStations["R2"].DsConn.AStop)
+	assert.Equal(t, false, arena.AllianceStations["R2"].DsConn.EStop)
+	assert.Equal(t, true, arena.AllianceStations["R2"].DsConn.AStop)
 
-	// Unpress the R2 E-stop.
-	plc.redAStops[0] = false
+	// Unpress the R2 stop.
 	plc.redEStops[0] = false
-	plc.redAStops[1] = false
 	plc.redEStops[1] = false
 	arena.Update()
 	assert.Equal(t, true, arena.AllianceStations["R1"].AStop)
 	assert.Equal(t, false, arena.AllianceStations["R1"].EStop)
-	assert.Equal(t, false, arena.AllianceStations["R2"].AStop)
-	assert.Equal(t, true, arena.AllianceStations["R2"].EStop)
+	assert.Equal(t, true, arena.AllianceStations["R2"].AStop)
+	assert.Equal(t, false, arena.AllianceStations["R2"].EStop)
 	arena.lastDsPacketTime = time.Unix(0, 0) // Force a DS packet.
 	arena.Update()
 	assert.Equal(t, false, arena.AllianceStations["R1"].DsConn.Enabled)
@@ -797,67 +827,35 @@ func TestPlcEStopAStop(t *testing.T) {
 		) * time.Second,
 	)
 	arena.Update()
-	assert.Equal(t, false, arena.AllianceStations["R1"].AStop)
 	assert.Equal(t, false, arena.AllianceStations["R1"].EStop)
-	assert.Equal(t, false, arena.AllianceStations["R2"].AStop)
-	assert.Equal(t, true, arena.AllianceStations["R2"].EStop)
+	assert.Equal(t, false, arena.AllianceStations["R2"].EStop)
 	arena.lastDsPacketTime = time.Unix(0, 0) // Force a DS packet.
 	arena.Update()
 	assert.Equal(t, TeleopPeriod, arena.MatchState)
 	assert.Equal(t, true, arena.AllianceStations["R1"].DsConn.Enabled)
-	assert.Equal(t, false, arena.AllianceStations["R2"].DsConn.Enabled)
+	assert.Equal(t, true, arena.AllianceStations["R2"].DsConn.Enabled)
 
-	// Press the R1 E-stop and the R2 A-stop.
-	plc.redAStops[0] = false
+	// Press the R1 E-stop during teleop.
 	plc.redEStops[0] = true
-	plc.redAStops[1] = true
 	plc.redEStops[1] = false
 	arena.Update()
-	assert.Equal(t, false, arena.AllianceStations["R1"].AStop)
 	assert.Equal(t, true, arena.AllianceStations["R1"].EStop)
-	assert.Equal(t, true, arena.AllianceStations["R2"].AStop)
-	assert.Equal(t, true, arena.AllianceStations["R2"].EStop)
+	assert.Equal(t, false, arena.AllianceStations["R2"].EStop)
 	arena.lastDsPacketTime = time.Unix(0, 0) // Force a DS packet.
 	arena.Update()
 	assert.Equal(t, false, arena.AllianceStations["R1"].DsConn.Enabled)
-	assert.Equal(t, false, arena.AllianceStations["R2"].DsConn.Enabled)
+	assert.Equal(t, true, arena.AllianceStations["R1"].DsConn.EStop)
+	assert.Equal(t, true, arena.AllianceStations["R2"].DsConn.Enabled)
 
-	// Ensure the other stations A-stops are working as well.
-	plc.redAStops[2] = true
-	plc.redEStops[2] = false
-	plc.blueAStops[0] = true
-	plc.blueEStops[0] = false
-	plc.blueAStops[1] = true
-	plc.blueEStops[1] = false
-	plc.blueAStops[2] = true
-	plc.blueEStops[2] = false
-	arena.Update()
-	assert.Equal(t, true, arena.AllianceStations["R3"].AStop)
-	assert.Equal(t, false, arena.AllianceStations["R3"].EStop)
-	assert.Equal(t, true, arena.AllianceStations["B1"].AStop)
-	assert.Equal(t, false, arena.AllianceStations["B1"].EStop)
-	assert.Equal(t, true, arena.AllianceStations["B2"].AStop)
-	assert.Equal(t, false, arena.AllianceStations["B2"].EStop)
-	assert.Equal(t, true, arena.AllianceStations["B3"].AStop)
-	assert.Equal(t, false, arena.AllianceStations["B3"].EStop)
-
-	// Ensure the other stations E-stops are working as well.
-	plc.redAStops[2] = false
+	// Ensure the other stations E-stops are working as well in teleop.
 	plc.redEStops[2] = true
-	plc.blueAStops[0] = false
 	plc.blueEStops[0] = true
-	plc.blueAStops[1] = false
 	plc.blueEStops[1] = true
-	plc.blueAStops[2] = false
 	plc.blueEStops[2] = true
 	arena.Update()
-	assert.Equal(t, false, arena.AllianceStations["R3"].AStop)
 	assert.Equal(t, true, arena.AllianceStations["R3"].EStop)
-	assert.Equal(t, false, arena.AllianceStations["B1"].AStop)
 	assert.Equal(t, true, arena.AllianceStations["B1"].EStop)
-	assert.Equal(t, false, arena.AllianceStations["B2"].AStop)
 	assert.Equal(t, true, arena.AllianceStations["B2"].EStop)
-	assert.Equal(t, false, arena.AllianceStations["B3"].AStop)
 	assert.Equal(t, true, arena.AllianceStations["B3"].EStop)
 
 	// Ensure unpressed E-stops are cleared at the end of the match.
@@ -901,7 +899,6 @@ func TestPlcEStopAStopWithPlcDisabled(t *testing.T) {
 	assert.Equal(t, true, arena.AllianceStations["R1"].DsConn.Enabled)
 
 	plc.redEStops[0] = true
-	plc.redAStops[1] = true
 	arena.Update()
 	assert.Equal(t, false, arena.AllianceStations["R1"].AStop)
 	assert.Equal(t, false, arena.AllianceStations["R1"].EStop)

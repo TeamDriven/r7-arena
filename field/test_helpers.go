@@ -21,6 +21,9 @@ func SetupTestArena(t *testing.T) *Arena {
 	dbPath := filepath.Join(dbDir, "test.db")
 	arena, err := NewArena(dbPath)
 	assert.Nil(t, err)
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "red", EStops: []bool{false, false, false}})
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "blue", EStops: []bool{false, false, false}})
+	arena.Scc.ApplyUpdate(SCCUpdate{Alliance: "scoring", EStops: []bool{false, false, false}})
 	t.Cleanup(
 		func() {
 			arena.Database.Close()

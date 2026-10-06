@@ -62,6 +62,24 @@ func TestSetupSettings(t *testing.T) {
 	assert.Equal(t, "/setup/settings#field", recorder.Header().Get("Location"))
 }
 
+func TestSetupSettingsSCC(t *testing.T) {
+	web := setupTestWeb(t)
+
+	recorder := web.postHttpResponse(
+		"/setup/settings",
+		"name=SCC Event&sccManagementEnabled=on&redSCCAddress=10.0.100.10&blueSCCAddress=10.0.100.11&"+
+			"sccUsername=admin&sccPassword=secret&sccUpCommands=up&sccDownCommands=down",
+	)
+	assert.Equal(t, 303, recorder.Code)
+	assert.True(t, web.arena.EventSettings.SCCManagementEnabled)
+	assert.Equal(t, "10.0.100.10", web.arena.EventSettings.RedSCCAddress)
+	assert.Equal(t, "10.0.100.11", web.arena.EventSettings.BlueSCCAddress)
+	assert.Equal(t, "admin", web.arena.EventSettings.SCCUsername)
+	assert.Equal(t, "secret", web.arena.EventSettings.SCCPassword)
+	assert.Equal(t, "up", web.arena.EventSettings.SCCUpCommands)
+	assert.Equal(t, "down", web.arena.EventSettings.SCCDownCommands)
+}
+
 func TestSetupSettingsBlockedDuringMatch(t *testing.T) {
 	web := setupTestWeb(t)
 	web.arena.EventSettings.Name = "Original Event"

@@ -97,9 +97,7 @@ func (scc *SCC) ApplyUpdate(update SCCUpdate) {
 
 func (scc *SCC) updateEstop(alliance string, station int, newValue bool) {
 	code := fmt.Sprintf("%s%d", alliance, station)
-	if scc.arena.AllianceStations[code].EStop == false || newValue {
-		scc.arena.handleTeamStop(code, newValue)
-	}
+	scc.arena.handleTeamStop(code, newValue)
 }
 
 func (scc *SCC) Disconnect(alliance string) {

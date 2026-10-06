@@ -32,6 +32,7 @@ func TestGenerateInMatchTimerRearText(t *testing.T) {
 func TestTeamSignTimerUsesGenericTeleopCountdown(t *testing.T) {
 	arena := setupTestArena(t)
 	arena.MatchState = TeleopPeriod
+	arena.AllianceStationDisplayMode = "match"
 	arena.MatchStartTime = time.Now().Add(
 		-time.Duration(game.MatchTiming.AutoDurationSec+game.MatchTiming.PauseDurationSec+10) * time.Second,
 	)
