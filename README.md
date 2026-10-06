@@ -1,33 +1,43 @@
-Cheesy Arena Lite [![Build Status](https://github.com/Team254/cheesy-arena-lite/actions/workflows/test.yml/badge.svg)](https://github.com/Team254/cheesy-arena-lite/actions)
+R7 Arena [![Build Status](https://github.com/TeamDriven/r7-arena/actions/workflows/test.yml/badge.svg)](https://github.com/TeamDriven/r7-arena/actions)
 ============
-A game-agnostic field management system that just works.
+Fork of [Cheesy Arena Lite](https://github.com/Team254/cheesy-arena-lite), a game-agnostic field management system that
+just works.
 
 For the game-specific version, see [Cheesy Arena](https://github.com/Team254/cheesy-arena).
 
 ## License
-Teams may use Cheesy Arena Lite freely for practice, scrimmages, and off-season events. See [LICENSE](LICENSE) for more details.
+
+Teams may use R7 Arena freely for practice, scrimmages, and off-season events. See [LICENSE](LICENSE) for more details.
 
 ## Installing
+
 **From a pre-built release**
 
-Download the [latest release](https://github.com/Team254/cheesy-arena-lite/releases). Pre-built packages are available for Linux, macOS (x64 and M1), and Windows.
+Download the [latest release](https://github.com/TeamDriven/r7-arena/releases). Pre-built packages are available
+for Linux and macOS (x64 and M1).
 
-On recent versions of macOS, you may be prevented from running an app from an unidentified developer; see [these instructions](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac) on how to bypass the warning.
+On recent versions of macOS, you may be prevented from running an app from an unidentified developer;
+see [these instructions](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac)
+on how to bypass the warning.
 
 **From source**
 
-1. Download [Go](https://golang.org/dl/) (version 1.26 or later recommended)
-1. Clone this GitHub repository to a location of your choice
-1. Navigate to the repository's directory in the terminal
-1. Compile the code with `go build`
-1. Run the `cheesy-arena-lite` or `cheesy-arena-lite.exe` binary
-1. Navigate to http://localhost:8080 in your browser (Google Chrome recommended)
+1. Download [Go](https://golang.org/dl/) (version 1.26 or later required)
+2. Clone this GitHub repository to a location of your choice
+3. Navigate to the repository's directory in the terminal
+4. Compile the code with `go build`
+5. Run the `r7-arena` binary
+6. Navigate to http://localhost:8080 in your browser (Google Chrome recommended)
 
 **IP address configuration**
 
-When running Cheesy Arena Lite on a playing field with robots, set the IP address of the computer running Cheesy Arena Lite to 10.0.100.5. By a convention baked into the FRC Driver Station software, driver stations will broadcast their presence on the network to this hardcoded address so that the FMS does not need to discover them by some other method.
+When running R7 Arena on a playing field with robots, set the IP address of the computer running R7 Arena to 10.0.100.5.
+By a convention baked into the FRC Driver Station software, driver stations will broadcast their presence on the network
+to this hardcoded address so that the FMS does not need to discover them by some other method.
 
-When running Cheesy Arena Lite without robots for testing or development, any IP address can be used.
+When running R7 Arena without robots for testing or development, any IP address can be used.
 
 ## Further reading
-Please see the game-specific [Cheesy Arena](https://github.com/Team254/cheesy-arena) README for technical details and acknowledgements.
+
+Please see the game-specific [Cheesy Arena](https://github.com/Team254/cheesy-arena) README for technical details and
+acknowledgements.
