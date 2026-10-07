@@ -29,7 +29,7 @@ func NewDnsMasq() *DnsMasq {
 	return &DnsMasq{
 		configDir: "/etc/dnsmasq.d",
 		restartService: func() error {
-			cmd := exec.Command("/usr/bin/sudo", "/usr/bin/systemctl", "restart", "dnsmasq")
+			cmd := exec.Command("/usr/bin/sudo", "/sbin/rc-service", "dnsmasq", "restart")
 			return cmd.Run()
 		},
 	}
