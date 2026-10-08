@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -27,10 +28,19 @@ type DnsMasq struct {
 
 func NewDnsMasq() *DnsMasq {
 	return &DnsMasq{
-		configDir: "/etc/dnsmasq.d",
+		configDir: func() string {
+			if runtime.GOOS == "darwin" {
+				return "/opt/homebrew/etc/dnsmasq.d"
+			}
+			return "/etc/dnsmasq.d"
+		}(),
 		restartService: func() error {
-			cmd := exec.Command("/usr/bin/sudo", "/sbin/rc-service", "dnsmasq", "restart")
-			return cmd.Run()
+			cmdLinux := exec.Command("/usr/bin/sudo", "/sbin/rc-service", "dnsmasq", "restart")
+			cmdMac := exec.Command("/usr/bin/sudo", "/opt/homebrew/bin/brew", "services", "restart", "dnsmasq")
+			if runtime.GOOS == "darwin" {
+				return cmdMac.Run()
+			}
+			return cmdLinux.Run()
 		},
 	}
 }

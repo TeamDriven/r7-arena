@@ -9,13 +9,18 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
 func TestNewDnsMasq(t *testing.T) {
 	dm := NewDnsMasq()
 	assert.NotNil(t, dm)
-	assert.Equal(t, "/etc/dnsmasq.d", dm.configDir)
+	expectedConfigDir := "/etc/dnsmasq.d"
+	if runtime.GOOS == "darwin" {
+		expectedConfigDir = "/opt/homebrew/etc/dnsmasq.d"
+	}
+	assert.Equal(t, expectedConfigDir, dm.configDir)
 	assert.NotNil(t, dm.restartService)
 }
 
