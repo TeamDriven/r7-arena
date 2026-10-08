@@ -298,8 +298,6 @@ const handleArenaStatus = function (data) {
 
   $("#accessPointStatus").attr("data-status", data.AccessPointStatus);
   $("#switchStatus").attr("data-status", data.SwitchStatus);
-  $("#redSCCStatus").attr("data-status", data.RedSCCStatus);
-  $("#blueSCCStatus").attr("data-status", data.BlueSCCStatus);
 
   if (data.PlcIsHealthy) {
     $("#plcStatus").text("Connected");
@@ -313,22 +311,6 @@ const handleArenaStatus = function (data) {
     $("#plc" + name + "Status").attr("data-ready", status);
   });
   $("#ftaReady").attr("data-ready", data.IsFtaReady);
-
-  if (data.ScoringSccConnected) {
-    $("#scoringSccStatus").addClass("scc-indicator-connected");
-  } else {
-    $("#scoringSccStatus").removeClass("scc-indicator-connected");
-  }
-  if (data.RedSccConnected) {
-    $("#redSccStatus").addClass("scc-indicator-connected");
-  } else {
-    $("#redSccStatus").removeClass("scc-indicator-connected");
-  }
-  if (data.BlueSccConnected) {
-    $("#blueSccStatus").addClass("scc-indicator-connected");
-  } else {
-    $("#blueSccStatus").removeClass("scc-indicator-connected");
-  }
 };
 
 // Handles a websocket message to update the teams for the current match.
@@ -419,6 +401,25 @@ const handleEventStatus = function (data) {
   $("#earlyLateMessage").text(data.EarlyLateMessage);
 };
 
+// Handles a websocket message to update the SCC status.
+var handleSCCUpdate = function(data) {
+  if (data.RedConnected) {
+    $("#redSccStatus").addClass("scc-indicator-connected");
+  } else {
+    $("#redSccStatus").removeClass("scc-indicator-connected");
+  }
+  if (data.BlueConnected) {
+    $("#blueSccStatus").addClass("scc-indicator-connected");
+  } else {
+    $("#blueSccStatus").removeClass("scc-indicator-connected");
+  }
+  if (data.ScoringConnected) {
+    $("#scoringSccStatus").addClass("scc-indicator-connected");
+  } else {
+    $("#scoringSccStatus").removeClass("scc-indicator-connected");
+  }
+};
+
 const formatPlayoffAllianceInfo = function (allianceNumber, offFieldTeams) {
   if (allianceNumber === 0) {
     return "";
@@ -466,6 +467,9 @@ $(function () {
     },
     scoringStatus: function (event) {
       handleScoringStatus(event.data);
+    },
+    sccstatus: function(event) {
+      handleSCCUpdate(event.data);
     },
   });
 });

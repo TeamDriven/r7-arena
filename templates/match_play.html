@@ -91,9 +91,9 @@ UI for controlling match play and viewing team connection and field status.
     <div class="card card-body bg-body-tertiary mt-3">
       <div class="row">
         <div class="col-lg-3">
-          <h6>Scoring</h6>
-          <p><span class="badge badge-scoring" id="refereeScoreStatus">Referee</span><br/>
-            <span class="badge badge-scoring" id="scoringPanelStatus"></span></p>
+          <h6 style="display:none!important">Scoring</h6>
+          <p><span class="badge badge-scoring" id="refereeScoreStatus" style="display:none!important">Referee</span><br/>
+            <span class="badge badge-scoring" id="scoringPanelStatus" style="display:none!important"></span></p>
           {{if .EventSettings.NetworkSecurityEnabled}}
           <h6>Network Status</h6>
           <p>
