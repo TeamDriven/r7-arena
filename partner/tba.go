@@ -9,7 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/TeamDriven/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/model"
 	"io"
 	"net/http"
 	"os"

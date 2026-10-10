@@ -6,10 +6,10 @@
 package field
 
 import (
-	"github.com/TeamDriven/r7-arena/game"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/playoff"
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/playoff"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 	"log"
 	"strconv"
 )

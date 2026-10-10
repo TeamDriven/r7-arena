@@ -1,4 +1,4 @@
-module github.com/TeamDriven/r7-arena
+module github.com/FRCTeam1987/r7-arena
 
 go 1.26.0
 

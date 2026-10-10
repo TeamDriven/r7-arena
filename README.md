@@ -1,4 +1,4 @@
-R7 Arena [![Build Status](https://github.com/TeamDriven/r7-arena/actions/workflows/test.yml/badge.svg)](https://github.com/TeamDriven/r7-arena/actions)
+R7 Arena [![Build Status](https://github.com/FRCTeam1987/r7-arena/actions/workflows/test.yml/badge.svg)](https://github.com/FRCTeam1987/r7-arena/actions)
 ============
 Fork of [Cheesy Arena Lite](https://github.com/Team254/cheesy-arena-lite), a game-agnostic field management system that
 just works.
@@ -13,7 +13,7 @@ Teams may use R7 Arena freely for practice, scrimmages, and off-season events. S
 
 **From a pre-built release**
 
-Download the [latest release](https://github.com/TeamDriven/r7-arena/releases). Pre-built packages are available
+Download the [latest release](https://github.com/FRCTeam1987/r7-arena/releases). Pre-built packages are available
 for Linux and macOS (x64 and M1).
 
 On recent versions of macOS, you may be prevented from running an app from an unidentified developer;

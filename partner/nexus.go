@@ -9,8 +9,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/TeamDriven/r7-arena/game"
-	"github.com/TeamDriven/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/model"
 	"io"
 	"log"
 	"net/http"
@@ -129,17 +129,21 @@ func (client *NexusClient) AutoQueue(matchName string, typeOrder int, matchStatu
 		winner = Tie
 	}
 
-	_, err := client.postAutoQueueRequest(autoQueueEvent{
-		Event: PostScores, MatchName: matchName, MatchNumber: typeOrder, Winner: winner,
-	})
+	_, err := client.postAutoQueueRequest(
+		autoQueueEvent{
+			Event: PostScores, MatchName: matchName, MatchNumber: typeOrder, Winner: winner,
+		},
+	)
 	return err
 }
 
 // MatchStarted notifies Nexus that the match has started.
 func (client *NexusClient) MatchStarted(matchName string, typeOrder int) error {
-	_, err := client.postAutoQueueRequest(autoQueueEvent{
-		Event: MatchStart, MatchName: matchName, MatchNumber: typeOrder,
-	})
+	_, err := client.postAutoQueueRequest(
+		autoQueueEvent{
+			Event: MatchStart, MatchName: matchName, MatchNumber: typeOrder,
+		},
+	)
 	return err
 }
 

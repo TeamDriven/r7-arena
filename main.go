@@ -5,9 +5,9 @@ package main
 
 import (
 	"flag"
-	"github.com/TeamDriven/r7-arena/field"
-	"github.com/TeamDriven/r7-arena/network"
-	"github.com/TeamDriven/r7-arena/web"
+	"github.com/FRCTeam1987/r7-arena/field"
+	"github.com/FRCTeam1987/r7-arena/network"
+	"github.com/FRCTeam1987/r7-arena/web"
 	"log"
 )
 

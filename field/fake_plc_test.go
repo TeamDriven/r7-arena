@@ -6,7 +6,7 @@
 package field
 
 import (
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 )
 
 type FakePlc struct {

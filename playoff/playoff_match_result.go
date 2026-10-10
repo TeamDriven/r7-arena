@@ -5,7 +5,7 @@
 
 package playoff
 
-import "github.com/TeamDriven/r7-arena/game"
+import "github.com/FRCTeam1987/r7-arena/game"
 
 type playoffMatchResult struct {
 	status game.MatchStatus

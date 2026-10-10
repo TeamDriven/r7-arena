@@ -3,8 +3,8 @@
 package web
 
 import (
-	"github.com/TeamDriven/r7-arena/field"
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/field"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
@@ -35,23 +35,29 @@ func TestSCCWebsocketHandler_SuccessAndDisconnect(t *testing.T) {
 	ws := websocket.NewTestWebsocket(conn)
 
 	// Send an SCC update for the red alliance.
-	ws.Write("sccupdate", map[string]any{
-		"alliance": "red",
-		"eStop1":   true,
-		"eStop2":   false,
-		"eStop3":   false,
-	})
+	ws.Write(
+		"sccupdate", map[string]any{
+			"alliance": "red",
+			"eStop1":   true,
+			"eStop2":   false,
+			"eStop3":   false,
+		},
+	)
 
 	// Wait and verify the arena state was updated.
-	assert.Eventually(t, func() bool {
-		return web.arena.Scc.IsSccConnected("red") && web.arena.AllianceStations["R1"].EStop
-	}, 500*time.Millisecond, 10*time.Millisecond)
+	assert.Eventually(
+		t, func() bool {
+			return web.arena.Scc.IsSccConnected("red") && web.arena.AllianceStations["R1"].EStop
+		}, 500*time.Millisecond, 10*time.Millisecond,
+	)
 
 	// Close the websocket connection and verify disconnection.
 	conn.Close()
-	assert.Eventually(t, func() bool {
-		return !web.arena.Scc.IsSccConnected("red") && !web.arena.AllianceStations["R1"].EStop
-	}, 500*time.Millisecond, 10*time.Millisecond)
+	assert.Eventually(
+		t, func() bool {
+			return !web.arena.Scc.IsSccConnected("red") && !web.arena.AllianceStations["R1"].EStop
+		}, 500*time.Millisecond, 10*time.Millisecond,
+	)
 }
 
 func TestSCCWebsocketHandler_InvalidMessages(t *testing.T) {
@@ -70,35 +76,43 @@ func TestSCCWebsocketHandler_InvalidMessages(t *testing.T) {
 	assert.Equal(t, "Invalid message type 'invalidType'.", readWebsocketError(t, ws))
 
 	// Missing alliance
-	ws.Write("sccupdate", map[string]any{
-		"eStop1": true,
-		"eStop2": false,
-		"eStop3": false,
-	})
+	ws.Write(
+		"sccupdate", map[string]any{
+			"eStop1": true,
+			"eStop2": false,
+			"eStop3": false,
+		},
+	)
 	assert.Equal(t, "Missing alliance string", readWebsocketError(t, ws))
 
 	// Missing eStop1
-	ws.Write("sccupdate", map[string]any{
-		"alliance": "red",
-		"eStop2":   false,
-		"eStop3":   false,
-	})
+	ws.Write(
+		"sccupdate", map[string]any{
+			"alliance": "red",
+			"eStop2":   false,
+			"eStop3":   false,
+		},
+	)
 	assert.Equal(t, "Missing eStop1 boolean", readWebsocketError(t, ws))
 
 	// Missing eStop2
-	ws.Write("sccupdate", map[string]any{
-		"alliance": "red",
-		"eStop1":   true,
-		"eStop3":   false,
-	})
+	ws.Write(
+		"sccupdate", map[string]any{
+			"alliance": "red",
+			"eStop1":   true,
+			"eStop3":   false,
+		},
+	)
 	assert.Equal(t, "Missing eStop2 boolean", readWebsocketError(t, ws))
 
 	// Missing eStop3
-	ws.Write("sccupdate", map[string]any{
-		"alliance": "red",
-		"eStop1":   true,
-		"eStop2":   false,
-	})
+	ws.Write(
+		"sccupdate", map[string]any{
+			"alliance": "red",
+			"eStop1":   true,
+			"eStop2":   false,
+		},
+	)
 	assert.Equal(t, "Missing eStop3 boolean", readWebsocketError(t, ws))
 }
 
@@ -117,10 +131,12 @@ func TestSCCTestingWebsocketHandler(t *testing.T) {
 	_ = readWebsocketType(t, ws, "sccstatus")
 
 	// Trigger an SCC status update and verify notification is received.
-	web.arena.Scc.ApplyUpdate(field.SCCUpdate{
-		Alliance: "blue",
-		EStops:   []bool{false, true, false},
-	})
+	web.arena.Scc.ApplyUpdate(
+		field.SCCUpdate{
+			Alliance: "blue",
+			EStops:   []bool{false, true, false},
+		},
+	)
 
 	var sccStatus field.SCCNotifier
 	msg := readWebsocketType(t, ws, "sccstatus")

@@ -8,7 +8,7 @@ package tournament
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/TeamDriven/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/model"
 	"math"
 	"math/rand"
 	"os"

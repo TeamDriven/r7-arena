@@ -7,7 +7,7 @@ package tournament
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/model"
 )
 
 // Creates or updates the given award, depending on whether or not it already exists.

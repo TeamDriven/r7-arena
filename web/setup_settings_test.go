@@ -5,10 +5,10 @@ package web
 
 import (
 	"bytes"
-	"github.com/TeamDriven/r7-arena/field"
-	"github.com/TeamDriven/r7-arena/game"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/tournament"
+	"github.com/FRCTeam1987/r7-arena/field"
+	"github.com/FRCTeam1987/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/tournament"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"mime/multipart"

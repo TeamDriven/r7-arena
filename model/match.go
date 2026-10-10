@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TeamDriven/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/game"
 )
 
 //go:generate go run golang.org/x/tools/cmd/stringer@v0.43.0 -type=MatchType

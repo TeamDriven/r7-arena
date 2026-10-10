@@ -5,10 +5,10 @@ package web
 
 import (
 	"encoding/json"
-	"github.com/TeamDriven/r7-arena/game"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/tournament"
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/tournament"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 	gorillawebsocket "github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"testing"

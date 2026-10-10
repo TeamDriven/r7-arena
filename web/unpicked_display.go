@@ -5,7 +5,7 @@
 package web
 
 import (
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 	"net/http"
 )
 

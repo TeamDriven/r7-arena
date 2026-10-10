@@ -7,8 +7,8 @@ package web
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 	"github.com/mitchellh/mapstructure"
 	"io"
 	"log"

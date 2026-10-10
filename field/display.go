@@ -7,7 +7,7 @@ package field
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/websocket"
+	"github.com/FRCTeam1987/r7-arena/websocket"
 	"net/url"
 	"reflect"
 	"sort"

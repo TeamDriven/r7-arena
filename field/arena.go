@@ -7,12 +7,12 @@ package field
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/game"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/network"
-	"github.com/TeamDriven/r7-arena/partner"
-	"github.com/TeamDriven/r7-arena/playoff"
-	"github.com/TeamDriven/r7-arena/plc"
+	"github.com/FRCTeam1987/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/network"
+	"github.com/FRCTeam1987/r7-arena/partner"
+	"github.com/FRCTeam1987/r7-arena/playoff"
+	"github.com/FRCTeam1987/r7-arena/plc"
 	"log"
 	"net"
 	"reflect"

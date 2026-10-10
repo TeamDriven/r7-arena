@@ -4,7 +4,7 @@ package network
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/model"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -114,10 +114,12 @@ func TestDnsMasq_GetTeamVlans(t *testing.T) {
 
 	teamVlans, err := dm.getTeamVlans()
 	assert.Nil(t, err)
-	assert.Equal(t, map[int]int{
-		254:  10,
-		1114: 20,
-	}, teamVlans)
+	assert.Equal(
+		t, map[int]int{
+			254:  10,
+			1114: 20,
+		}, teamVlans,
+	)
 
 	// Error when directory does not exist
 	invalidDm := &DnsMasq{configDir: filepath.Join(tempDir, "nonexistent")}

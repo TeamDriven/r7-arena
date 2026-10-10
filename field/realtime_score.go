@@ -5,7 +5,7 @@
 
 package field
 
-import "github.com/TeamDriven/r7-arena/game"
+import "github.com/FRCTeam1987/r7-arena/game"
 
 type RealtimeScore struct {
 	CurrentScore   game.Score

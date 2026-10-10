@@ -7,7 +7,7 @@ package web
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/game"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -15,8 +15,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/TeamDriven/r7-arena/field"
-	"github.com/TeamDriven/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/field"
+	"github.com/FRCTeam1987/r7-arena/model"
 )
 
 const (

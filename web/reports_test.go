@@ -4,9 +4,9 @@
 package web
 
 import (
-	"github.com/TeamDriven/r7-arena/game"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/tournament"
+	"github.com/FRCTeam1987/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/tournament"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"

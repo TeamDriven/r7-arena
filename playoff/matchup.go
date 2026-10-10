@@ -8,7 +8,7 @@ package playoff
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/game"
+	"github.com/FRCTeam1987/r7-arena/game"
 	"math"
 )
 

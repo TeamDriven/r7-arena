@@ -5,8 +5,8 @@ package field
 
 import (
 	"fmt"
-	"github.com/TeamDriven/r7-arena/model"
-	"github.com/TeamDriven/r7-arena/network"
+	"github.com/FRCTeam1987/r7-arena/model"
+	"github.com/FRCTeam1987/r7-arena/network"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"testing"
